@@ -70,7 +70,6 @@ const getColumnXml = ({style, yStart, column}) => {
 
 const createSvg = data => {
   let yStart = data.style.padding + data.style.fontSize
-  console.log(yStart)
   const output = []
 
   for (const section of data.sections) {
