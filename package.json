@@ -2,10 +2,13 @@
   "name": "end-credits-generator",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "index.mjs",
   "scripts": {
-    "start": "node index.js"
+    "start": "node index.mjs"
   },
   "author": "",
-  "license": "WTFPL"
+  "license": "WTFPL",
+  "dependencies": {
+    "js-yaml": "^3.14.0"
+  }
 }
