@@ -8,11 +8,10 @@ npm install
 ./index.mjs ./input.yaml ./export.svg
 ```
 
-Export to png file using inkscape
+To export png file directly, you need to have inkscape installed, and run:
 
-```sh
-inkscape ./export.svg --export-text-to-path --export-filename=/tmp/credits.svg
-inkscape /tmp/credits.svg --export-filename="credits.png"
+```
+./index.mjs ./input.yaml ./export.png
 ```
 
 ## Example
