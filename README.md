@@ -21,3 +21,7 @@ Get this:
 ![](./example.svg)
 
 From this: [example.yaml](./example.yaml)
+
+## License
+
+[GNU LGPLv3](./LICENSE)

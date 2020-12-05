@@ -7,7 +7,7 @@
     "start": "node index.mjs"
   },
   "author": "",
-  "license": "WTFPL",
+  "license": "GNU LGPLv3",
   "dependencies": {
     "js-yaml": "^3.14.0"
   }
