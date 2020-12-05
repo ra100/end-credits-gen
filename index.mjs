@@ -6,8 +6,7 @@ import path from 'path'
 import yaml from 'js-yaml'
 
 import {createSvgFile} from './src/svg.mjs'
-import {createPng} from './src/svgToPng.mjs'
-import {renderClip} from './src/render.mjs'
+import {createPng, renderClip} from './src/svgToPng.mjs'
 
 const importFile = path => fs.readFileSync(path, 'utf-8')
 
@@ -31,15 +30,8 @@ const png = async (config, output) => {
 }
 
 const render = async (config, output) => {
-  const tmpOutputFile = path.join('.', `tmp-png-out${Date.now()}.png`)
-  const {height} = await png(config, tmpOutputFile)
-
   console.info('Rendering clip')
-  try {
-    await renderClip(config, tmpOutputFile, height, output)
-  } finally {
-    fs.unlinkSync(tmpOutputFile)
-  }
+  await renderClip(config, output)
 }
 
 const main = () => {

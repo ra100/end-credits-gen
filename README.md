@@ -22,9 +22,7 @@ installed, and run:
 ./index.mjs ./input.yaml ./export.png
 ```
 
-To export rendered frames with crawl speed configured by `ppf` setting in yaml,
-you need [inkscape](https://inkscape.org) and
-[ImageMagick](https://imagemagick.org/script/download.php) installed
+To export rendered frames with crawl speed configured by `ppf` setting in yaml
 
 ```bash
 ./index.mjs ./input.yaml ./export/folder/
