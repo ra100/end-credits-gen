@@ -39,10 +39,19 @@ const getHtmlStyle = ({fontSize, fontWeight, fontFamily, align, color}) =>
     `text-anchor: ${anchorMap[align]}`,
   ].join(';')
 
-const wrapColumn = (text, style, yOffset) =>
-  `<text style="${style}">
-  ${text}
-</text>`
+const getTransform = ({xTransform, xOffset}) => {
+  if (!xTransform) {
+    return ''
+  }
+  const positionCorrection = (1 - xTransform) * xOffset
+  return `transform="matrix(${xTransform}, 0, 0, 1, ${positionCorrection}, 0)"`
+}
+
+const wrapColumn = (text, style, yOffset) => {
+  const htmlStyle = getHtmlStyle(style)
+
+  return `<text style="${htmlStyle}" ${getTransform(style)}>${text}</text>`
+}
 
 const wrapText = ({text, yOffset, xOffset}) =>
   `<tspan x="${xOffset}" y="${yOffset}">${text}</tspan>`
@@ -62,14 +71,14 @@ const getColumnHeight = (length, style) =>
   length * (style.fontSize + style.padding)
 
 const getColumnXml = ({style, yStart, column}) => {
-  const htmlStyle = getHtmlStyle(style)
   const lines = composeText({lines: column, style, yStart})
 
-  return wrapColumn(lines, htmlStyle, yStart)
+  return wrapColumn(lines, style, yStart)
 }
 
 const createSvg = data => {
-  let yStart = data.style.padding + data.style.fontSize
+  const firstStyle = {...data.style, ...data.sections[0].columns[0]}
+  let yStart = firstStyle.fontSize
   const output = []
 
   for (const section of data.sections) {
@@ -84,7 +93,7 @@ const createSvg = data => {
             column,
           })
         })
-        .join('')
+        .join('\n')
 
       output.push(xml)
 
