@@ -8,6 +8,13 @@ npm install
 ./index.mjs ./input.yaml ./export.svg
 ```
 
+Export to png file using inkscape
+
+```sh
+inkscape ./export.svg --export-text-to-path --export-filename=/tmp/credits.svg
+inkscape /tmp/credits.svg --export-filename="credits.png"
+```
+
 ## Example
 
 Input
