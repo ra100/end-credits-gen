@@ -1,4 +1,7 @@
 ---
+width: 3860 # frame width
+height: 2160 # frame height
+ppf: 3 # rolling speed, Pixel Per Frame, should be 3ppf for final resolution
 style:
   background: '#000'
   color: '#fff'
@@ -7,7 +10,6 @@ style:
   fontWeight: 300
   marginBottom: 16
   marginTop: 0
-  width: 3840
 sections:
   - marginBottom: 200
     columns:
@@ -15,7 +17,7 @@ sections:
         fontWeight: 400
         fontSize: 150
         xOffset: 1970
-        xTransform: 0.8
+        xTransform: 0.8 # makes the text narrower or wider
     content:
       - - - A Movie Title
   - marginBottom: 200
@@ -31,7 +33,7 @@ sections:
         - - Great Actor
       - - - Less Awesome Role
         - - Still Great Actor
-      - - - ''
+      - - - '' # you can create empty line like this
         - - ''
       - - - Some Staff
         - - Nice Person

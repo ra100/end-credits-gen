@@ -20,7 +20,7 @@ const textToPath = async (input, output) => {
 const svgToPng = async (input, output) => {
   if (output) {
     assert(
-      output.slice(-4, output.length) === '.png',
+      output.slice(-4) === '.png',
       'Output file must have ".png" extension'
     )
   }

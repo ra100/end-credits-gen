@@ -4,64 +4,67 @@
   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
   xmlns:svg="http://www.w3.org/2000/svg"
   xmlns="http://www.w3.org/2000/svg" version="1.1"
-  viewBox="0 0 3840 1884"
+  viewBox="0 0 3860 6204"
   >
   <style>
   :root {
     background: #000;
   }
   </style>
-  <g id="layer1">
+  <g id="background">
+    <rect x="0" y="0" width="3860" height="6204" style="fill: #000;"/>
+  </g>
+  <g id="credits">
       <text style="fill: #fff;font-family: Ubuntu;font-size: 150px;font-weight: 400;text-align: center;text-anchor: middle" transform="matrix(0.8, 0, 0, 1, 393.9999999999999, 0)">
-    <tspan x="1970" y="150">A Movie Title</tspan>
+    <tspan x="1970" y="2310">A Movie Title</tspan>
   </text>
   <text style="fill: #fff;font-family: Ubuntu;font-size: 72px;font-weight: 200;text-align: right;text-anchor: end" >
-    <tspan x="1870" y="516">Awesome Role</tspan>
+    <tspan x="1870" y="2676">Awesome Role</tspan>
   </text>
   <text style="fill: #fff;font-family: Ubuntu;font-size: 72px;font-weight: 400;text-align: left;text-anchor: start" >
-    <tspan x="1970" y="516">Great Actor</tspan>
+    <tspan x="1970" y="2676">Great Actor</tspan>
   </text>
   <text style="fill: #fff;font-family: Ubuntu;font-size: 72px;font-weight: 200;text-align: right;text-anchor: end" >
-    <tspan x="1870" y="604">Less Awesome Role</tspan>
+    <tspan x="1870" y="2764">Less Awesome Role</tspan>
   </text>
   <text style="fill: #fff;font-family: Ubuntu;font-size: 72px;font-weight: 400;text-align: left;text-anchor: start" >
-    <tspan x="1970" y="604">Still Great Actor</tspan>
+    <tspan x="1970" y="2764">Still Great Actor</tspan>
   </text>
   <text style="fill: #fff;font-family: Ubuntu;font-size: 72px;font-weight: 200;text-align: right;text-anchor: end" >
-    <tspan x="1870" y="692"></tspan>
+    <tspan x="1870" y="2852"></tspan>
   </text>
   <text style="fill: #fff;font-family: Ubuntu;font-size: 72px;font-weight: 400;text-align: left;text-anchor: start" >
-    <tspan x="1970" y="692"></tspan>
+    <tspan x="1970" y="2852"></tspan>
   </text>
   <text style="fill: #fff;font-family: Ubuntu;font-size: 72px;font-weight: 200;text-align: right;text-anchor: end" >
-    <tspan x="1870" y="780">Some Staff</tspan>
+    <tspan x="1870" y="2940">Some Staff</tspan>
   </text>
   <text style="fill: #fff;font-family: Ubuntu;font-size: 72px;font-weight: 400;text-align: left;text-anchor: start" >
-    <tspan x="1970" y="780">Nice Person</tspan><tspan x="1970" y="868">Nice Person Too</tspan>
+    <tspan x="1970" y="2940">Nice Person</tspan><tspan x="1970" y="3028">Nice Person Too</tspan>
   </text>
   <text style="fill: #fff;font-family: Ubuntu;font-size: 64px;font-weight: 300;text-align: center;text-anchor: middle" >
-    <tspan x="1920" y="1156">First line of some long text centered you know how</tspan>
+    <tspan x="1920" y="3316">First line of some long text centered you know how</tspan>
   </text>
   <text style="fill: #fff;font-family: Ubuntu;font-size: 64px;font-weight: 300;text-align: center;text-anchor: middle" >
-    <tspan x="1920" y="1232">second line of that same text</tspan>
+    <tspan x="1920" y="3392">second line of that same text</tspan>
   </text>
   <text style="fill: #fff;font-family: Ubuntu;font-size: 72px;font-weight: 300;text-align: right;text-anchor: end" >
-    <tspan x="1620" y="1508">left</tspan>
+    <tspan x="1620" y="3668">left</tspan>
   </text>
   <text style="fill: #fff;font-family: Ubuntu;font-size: 72px;font-weight: 300;text-align: center;text-anchor: middle" >
-    <tspan x="1920" y="1508">center</tspan>
+    <tspan x="1920" y="3668">center</tspan>
   </text>
   <text style="fill: #fff;font-family: Ubuntu;font-size: 72px;font-weight: 300;text-align: left;text-anchor: start" >
-    <tspan x="2220" y="1508">right</tspan>
+    <tspan x="2220" y="3668">right</tspan>
   </text>
   <text style="fill: #fff;font-family: Ubuntu;font-size: 72px;font-weight: 300;text-align: right;text-anchor: end" >
-    <tspan x="1620" y="1596">other left</tspan>
+    <tspan x="1620" y="3756">other left</tspan>
   </text>
   <text style="fill: #fff;font-family: Ubuntu;font-size: 72px;font-weight: 300;text-align: center;text-anchor: middle" >
-    <tspan x="1920" y="1596">other center</tspan>
+    <tspan x="1920" y="3756">other center</tspan>
   </text>
   <text style="fill: #fff;font-family: Ubuntu;font-size: 72px;font-weight: 300;text-align: left;text-anchor: start" >
-    <tspan x="2220" y="1596">other right</tspan>
+    <tspan x="2220" y="3756">other right</tspan>
   </text>
   </g>
 </svg>

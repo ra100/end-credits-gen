@@ -15,7 +15,10 @@ const composeSvg = ({content, width, height, background}) =>
     background: ${background || 'transparent'};
   }
   </style>
-  <g id="layer1">
+  <g id="background">
+    <rect x="0" y="0" width="${width}" height="${height}" style="fill: ${background};"/>
+  </g>
+  <g id="credits">
     ${content}
   </g>
 </svg>\n`
@@ -79,7 +82,7 @@ const getColumnXml = ({style, yStart, column}) => {
 
 export const createSvg = data => {
   const firstStyle = {...data.style, ...data.sections[0].columns[0]}
-  let yStart = firstStyle.fontSize + firstStyle.marginTop
+  let yStart = firstStyle.fontSize + firstStyle.marginTop + data.height
   const output = []
 
   for (const section of data.sections) {
@@ -111,19 +114,23 @@ export const createSvg = data => {
     yStart += section.marginBottom || 0
   }
 
-  return composeSvg({
-    ...data.style,
-    content: output.join('\n'),
-    height: yStart,
-  })
+  return {
+    content: composeSvg({
+      ...data.style,
+      content: output.join('\n'),
+      height: yStart + data.height,
+      width: data.width,
+    }),
+    height: yStart + data.height,
+  }
 }
 
 export const createSvgFile = (config, output) => {
   const outputFile = output || path.join('.', `tmp-path-svg${Date.now()}.svg`)
 
-  const svgData = createSvg(config)
+  const {content, height} = createSvg(config)
 
-  fs.writeFileSync(outputFile, svgData)
+  fs.writeFileSync(outputFile, content)
 
-  return outputFile
+  return {filename: outputFile, height}
 }

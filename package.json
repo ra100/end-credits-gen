@@ -6,6 +6,7 @@
   "scripts": {
     "start": "node index.mjs"
   },
+  "type": "module",
   "author": "",
   "license": "GNU LGPLv3",
   "dependencies": {
