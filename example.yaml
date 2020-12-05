@@ -5,10 +5,20 @@ style:
   fontFamily: Ubuntu
   fontSize: 72
   fontWeight: 300
-  padding: 16
+  marginBottom: 16
+  marginTop: 0
   width: 3840
 sections:
-  - padding: 200
+  - marginBottom: 200
+    columns:
+      - align: center
+        fontWeight: 400
+        fontSize: 150
+        xOffset: 1970
+        xTransform: 0.8
+    content:
+      - - - A Movie Title
+  - marginBottom: 200
     columns:
       - align: right
         fontWeight: 200
@@ -26,16 +36,16 @@ sections:
       - - - Some Staff
         - - Nice Person
           - Nice Person Too
-  - padding: 200
+  - marginBottom: 200
     columns:
       - fontSize: 64
-        padding: 12
+        marginBottom: 12
         align: center
         xOffset: 1920
     content:
       - - - First line of some long text centered you know how
       - - - second line of that same text
-  - padding: 200
+  - marginBottom: 200
     columns:
       - align: right
         xOffset: 1620

@@ -50,7 +50,9 @@ const getTransform = ({xTransform, xOffset}) => {
 const wrapColumn = (text, style, yOffset) => {
   const htmlStyle = getHtmlStyle(style)
 
-  return `<text style="${htmlStyle}" ${getTransform(style)}>${text}</text>`
+  return `  <text style="${htmlStyle}" ${getTransform(style)}>
+    ${text}
+  </text>`
 }
 
 const wrapText = ({text, yOffset, xOffset}) =>
@@ -61,14 +63,16 @@ const composeText = ({lines, style, yStart}) =>
     .map((text, index) =>
       wrapText({
         text,
-        yOffset: yStart + index * (style.fontSize + style.padding),
+        yOffset:
+          yStart +
+          index * (style.fontSize + style.marginBottom + style.marginTop),
         xOffset: style.xOffset,
       })
     )
     .join('')
 
 const getColumnHeight = (length, style) =>
-  length * (style.fontSize + style.padding)
+  length * (style.fontSize + style.marginBottom + style.marginTop)
 
 const getColumnXml = ({style, yStart, column}) => {
   const lines = composeText({lines: column, style, yStart})
@@ -78,11 +82,14 @@ const getColumnXml = ({style, yStart, column}) => {
 
 const createSvg = data => {
   const firstStyle = {...data.style, ...data.sections[0].columns[0]}
-  let yStart = firstStyle.fontSize
+  let yStart = firstStyle.fontSize + firstStyle.marginTop
   const output = []
 
   for (const section of data.sections) {
     const {columns, content} = section
+    if (section.marginTop) {
+      yStart += section.marginTop
+    }
 
     for (const row of content) {
       const xml = row
@@ -104,12 +111,12 @@ const createSvg = data => {
       )
     }
 
-    yStart += section.padding || 0
+    yStart += section.marginBottom || 0
   }
 
   return composeSvg({
     ...data.style,
-    content: output.join(''),
+    content: output.join('\n'),
     height: yStart,
   })
 }
