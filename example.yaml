@@ -1,7 +1,9 @@
 ---
-width: 3860 # frame width
-height: 2160 # frame height
-ppf: 3 # rolling speed, Pixel Per Frame, should be 3ppf for final resolution
+width: 3860 # frame width - for SVG and single PNG
+height: 2160 # frame height - for SVG and single PNG
+outputWidth: 1980 # if you want to specify different output resolution
+outputHeight: 1080 # if you want to specify different output resolution
+ppf: 3 # rolling speed, Pixel Per Frame, should be 3ppf for final/output resolution
 style:
   background: '#000'
   color: '#fff'
