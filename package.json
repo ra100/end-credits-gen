@@ -11,5 +11,10 @@
   "license": "GNU LGPLv3",
   "dependencies": {
     "js-yaml": "^3.14.0"
+  },
+  "devDependencies": {
+    "eslint": "^7.22.0",
+    "eslint-config-prettier": "^8.1.0",
+    "prettier": "^2.2.1"
   }
 }

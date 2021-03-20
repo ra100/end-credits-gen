@@ -55,24 +55,20 @@ const wrapColumn = (text, style, yOffset) => {
   </text>`
 }
 
-const wrapText = ({text, yOffset, xOffset}) =>
-  `<tspan x="${xOffset}" y="${yOffset}">${text}</tspan>`
+const wrapText = ({text, yOffset, xOffset}) => `<tspan x="${xOffset}" y="${yOffset}">${text}</tspan>`
 
 const composeText = ({lines, style, yStart}) =>
   lines
     .map((text, index) =>
       wrapText({
         text,
-        yOffset:
-          yStart +
-          index * (style.fontSize + style.marginBottom + style.marginTop),
+        yOffset: yStart + index * (style.fontSize + style.marginBottom + style.marginTop),
         xOffset: style.xOffset,
       })
     )
     .join('')
 
-const getColumnHeight = (length, style) =>
-  length * (style.fontSize + style.marginBottom + style.marginTop)
+const getColumnHeight = (length, style) => length * (style.fontSize + style.marginBottom + style.marginTop)
 
 const getColumnXml = ({style, yStart, column}) => {
   const lines = composeText({lines: column, style, yStart})
@@ -80,7 +76,7 @@ const getColumnXml = ({style, yStart, column}) => {
   return wrapColumn(lines, style, yStart)
 }
 
-export const createSvg = data => {
+export const createSvg = (data) => {
   const firstStyle = {...data.style, ...data.sections[0].columns[0]}
   let yStart = firstStyle.fontSize + firstStyle.marginTop + data.height
   const output = []
@@ -104,11 +100,7 @@ export const createSvg = data => {
 
       output.push(xml)
 
-      yStart += Math.max(
-        ...row.map((array, i) =>
-          getColumnHeight(array.length, {...data.style, ...columns[i]})
-        )
-      )
+      yStart += Math.max(...row.map((array, i) => getColumnHeight(array.length, {...data.style, ...columns[i]})))
     }
 
     yStart += section.marginBottom || 0
