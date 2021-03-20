@@ -11,14 +11,14 @@
   ],
   "scripts": {
     "build": "webpack",
-    "start": "npm build && node dist/index.js",
-    "cli": "npm build && node dist/cli.js",
+    "start": "npm run build && node dist/index.js",
+    "cli": "npm run build && node dist/cli.js",
     "lint": "eslint --ext mjs --ext ts .",
     "test": "echo 'No Tests'",
     "prebuild": "rm -rf ./dist/*",
     "postinstall": "rm -rf ./cache/*"
   },
-  "type": "module",
+  "type": "commonjs",
   "author": "ra100",
   "license": "GNU LGPLv3",
   "dependencies": {

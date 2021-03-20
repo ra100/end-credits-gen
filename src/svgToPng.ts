@@ -5,7 +5,7 @@ import path from 'path'
 import {exec} from 'child_process'
 import assert from 'assert'
 
-import {Config, createSvgFile} from './svg'
+import {Config, createSvgFile} from './createSvg'
 
 const execPromise = promisify(exec)
 

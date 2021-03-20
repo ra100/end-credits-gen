@@ -2,7 +2,7 @@ import assert from 'assert'
 import fs from 'fs'
 import {load} from 'js-yaml'
 
-import {Config, createSvgFile} from './svg'
+import {Config, createSvgFile} from './createSvg'
 import {createPng, renderClip} from './svgToPng'
 
 const importFile = (path: string) => fs.readFileSync(path, 'utf8')
