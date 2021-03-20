@@ -37,6 +37,14 @@ Get this:
 
 From this: [example.yaml](./example.yaml)
 
+## Cloud development
+
+### Useful commands
+
+- `cdk deploy` deploy this stack to your default AWS account/region
+- `cdk diff` compare deployed stack with current state
+- `cdk synth` emits the synthesized CloudFormation template
+
 ## License
 
 [GNU LGPLv3](./LICENSE)
