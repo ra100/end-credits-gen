@@ -17,7 +17,7 @@
     "test": "jest",
     "clean": "rm -rf ./dist/*",
     "postinstall": "rm -rf ./cache/*",
-    "cdk": "npm run build && cdk"
+    "cdk": "cdk"
   },
   "author": "ra100",
   "license": "GNU LGPLv3",
