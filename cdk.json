@@ -1,5 +1,5 @@
 {
-  "app": "node dist/cdk/index.js",
+  "app": "npx ts-node cdk/index.ts",
   "context": {
     "@aws-cdk/core:enableStackNameDuplicates": "true",
     "aws-cdk:enableDiffNoFail": "true",
