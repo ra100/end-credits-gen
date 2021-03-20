@@ -29,7 +29,7 @@ const svgToPng = async (input: string, output: string) => {
   return outputFileName
 }
 
-export const createPng = async (input: string, output: string) => {
+export const createPng = async (input: string, output: string): Promise<string> => {
   const pathedSvg = await textToPath(input)
   const pngPath = await svgToPng(pathedSvg, output)
 
@@ -48,7 +48,7 @@ const cropFrameToFile = (
 
   const exportArea = [0, offset, width, offset + height].join(':').replace(/\./g, ',')
 
-  const inscapeArgs = [
+  const inscapeArgsuments = [
     svgImagePath,
     `--export-area=${exportArea}`,
     `--export-width=${outputWidth || width}`,
@@ -57,10 +57,10 @@ const cropFrameToFile = (
   ].join(' ')
 
   console.info('Rendering frame', filenameNumber)
-  return execPromise(`inkscape ${inscapeArgs}`)
+  return execPromise(`inkscape ${inscapeArgsuments}`)
 }
 
-export const renderClip = async (config: Config, outputDirectory: string) => {
+export const renderClip = async (config: Config, outputDirectory: string): Promise<void> => {
   const {filename, height: creditsHeight} = createSvgFile(config)
   const svgImagePath = await textToPath(filename)
 

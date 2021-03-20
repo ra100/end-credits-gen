@@ -124,7 +124,7 @@ const getColumnXml = ({style, yStart, column}: {style: ColumnStyle; yStart: numb
   return wrapColumn(lines, style)
 }
 
-export const createSvg = (data: Config) => {
+export const createSvg = (data: Config): {content: string; height: number} => {
   const firstStyle = {...data.style, ...data.sections[0].columns[0]}
   let yStart = firstStyle.fontSize + firstStyle.marginTop + data.height
 
