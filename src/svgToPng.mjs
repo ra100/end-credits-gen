@@ -52,7 +52,7 @@ const cropFrameToFile = ({ppf, width, height, outputWidth, outputHeight}, {frame
   )
 }
 
-export const renderClip = async (config, outputDir) => {
+export const renderClip = async (config, outputDirectory) => {
   const {filename, height: creditsHeight} = createSvgFile(config)
   const svgImagePath = await textToPath(filename)
 
@@ -62,16 +62,16 @@ export const renderClip = async (config, outputDir) => {
 
   console.info('Rendering', frameCount, 'frames')
   try {
-    await execPromise(`mkdir -p ${outputDir}`)
+    await execPromise(`mkdir -p ${outputDirectory}`)
 
     for (let frameNumber = 0; frameNumber < frameCount; ) {
       const batch = []
-      for (let i = 0; i < cpus && frameNumber + i < frameCount; i++) {
+      for (let index = 0; index < cpus && frameNumber + index < frameCount; index++) {
         batch.push(
           cropFrameToFile(config, {
             frameNumber,
             svgImagePath,
-            outputDir,
+            outputDir: outputDirectory,
           })
         )
         frameNumber++

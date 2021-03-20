@@ -47,7 +47,7 @@ const getTransform = ({xTransform, xOffset}) => {
   return `transform="matrix(${xTransform}, 0, 0, 1, ${positionCorrection}, 0)"`
 }
 
-const wrapColumn = (text, style, yOffset) => {
+const wrapColumn = (text, style) => {
   const htmlStyle = getHtmlStyle(style)
 
   return `  <text style="${htmlStyle}" ${getTransform(style)}>
@@ -73,7 +73,7 @@ const getColumnHeight = (length, style) => length * (style.fontSize + style.marg
 const getColumnXml = ({style, yStart, column}) => {
   const lines = composeText({lines: column, style, yStart})
 
-  return wrapColumn(lines, style, yStart)
+  return wrapColumn(lines, style)
 }
 
 export const createSvg = (data) => {
@@ -82,16 +82,16 @@ export const createSvg = (data) => {
   const output = []
 
   for (const section of data.sections) {
-    const {columns, content} = section
-    if (section.marginTop) {
-      yStart += section.marginTop
+    const {columns, content, marginTop, marginBottom} = section
+    if (marginTop) {
+      yStart += marginTop
     }
 
     for (const row of content) {
       const xml = row
-        .map((column, i) => {
+        .map((column, index) => {
           return getColumnXml({
-            style: {...data.style, ...columns[i]},
+            style: {...data.style, ...columns[index]},
             yStart,
             column,
           })
@@ -100,10 +100,12 @@ export const createSvg = (data) => {
 
       output.push(xml)
 
-      yStart += Math.max(...row.map((array, i) => getColumnHeight(array.length, {...data.style, ...columns[i]})))
+      yStart += Math.max(
+        ...row.map((array, index) => getColumnHeight(array.length, {...data.style, ...columns[index]}))
+      )
     }
 
-    yStart += section.marginBottom || 0
+    yStart += marginBottom || 0
   }
 
   return {

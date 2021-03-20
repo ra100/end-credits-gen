@@ -2,7 +2,6 @@
 
 import assert from 'assert'
 import fs from 'fs'
-import path from 'path'
 import yaml from 'js-yaml'
 
 import {createSvgFile} from './src/svg.mjs'
