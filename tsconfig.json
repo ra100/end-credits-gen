@@ -3,8 +3,9 @@
   "include": ["./src"],
   "exclude": ["cdk.out", "dist"],
   "compilerOptions": {
-    "module": "esnext",
-    "lib": ["esnext", "es2020"],
+    "module": "commonjs",
+    "lib": ["esnext"],
+    "target": "esnext",
     "importHelpers": false,
     // output .d.ts declaration files for consumers
     "declaration": true,

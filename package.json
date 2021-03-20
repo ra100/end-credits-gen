@@ -15,11 +15,10 @@
     "cli": "npm run build && node dist/cli.js",
     "lint": "eslint --ext mjs --ext ts .",
     "test": "jest",
-    "prebuild": "rm -rf ./dist/*",
+    "clean": "rm -rf ./dist/*",
     "postinstall": "rm -rf ./cache/*",
-    "cdk": "cdk"
+    "cdk": "npm run build && cdk"
   },
-  "type": "module",
   "author": "ra100",
   "license": "GNU LGPLv3",
   "dependencies": {
@@ -45,8 +44,7 @@
     "source-map-support": "^0.5.19",
     "ts-jest": "^26.2.0",
     "ts-loader": "^8.0.18",
-    "typescript": "^4.2.3",
-    "webpack": "^5.27.0",
-    "webpack-cli": "^4.5.0"
+    "ts-node": "^9.1.1",
+    "typescript": "^4.2.3"
   }
 }
