@@ -2,9 +2,9 @@
   "name": "end-credits-generator",
   "version": "1.0.0",
   "description": "",
-  "main": "index.mjs",
+  "main": "src/cli.mjs",
   "scripts": {
-    "start": "node index.mjs",
+    "start": "node src/index.mjs",
     "lint": "eslint --ext mjs ."
   },
   "type": "module",
