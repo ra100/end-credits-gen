@@ -12,20 +12,20 @@ npm install
 2. Run
 
 ```bash
-./src/cli.mjs ./input.yaml ./export.svg
+npm run cli -- ./input.yaml ./export.svg
 ```
 
 To export **png** file directly, you need to have [inkscape](https://inkscape.org)
 installed, and run:
 
 ```bash
-./src/cli.mjs ./input.yaml ./export.png
+npm run cli -- ./input.yaml ./export.png
 ```
 
 To export rendered frames with crawl speed configured by `ppf` setting in yaml
 
 ```bash
-./src/cli.mjs ./input.yaml ./export/folder/
+npm run cli -- ./input.yaml ./export/folder/
 ```
 
 This will produce folder with files `./export/folder/credits_<frame number>.png`

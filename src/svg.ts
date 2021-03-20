@@ -1,7 +1,50 @@
 import path from 'path'
 import fs from 'fs'
 
-const composeSvg = ({content, width, height, background}) =>
+type ConfigStyle = {
+  background: string
+  color: string
+  fontFamily: string
+  fontSize: number
+  fontWeight: number
+  marginBottom: number
+  marginTop: number
+  xOffset?: number
+  xTransform?: number
+  align?: string
+}
+
+type ColumnStyle = ConfigStyle & {
+  align: string
+  xOffset: number
+  marginTop?: number
+}
+
+type Section = {
+  marginBottom: number
+  marginTop?: number
+  columns: ColumnStyle[]
+  content: string[][][]
+}
+
+export type Config = {
+  width: number
+  height: number
+  outputWidth: number
+  outputHeight: number
+  ppf: number
+  style: ConfigStyle
+  sections: Section[]
+}
+
+type ComposeOptions = {
+  content: string
+  width: number
+  height: number
+  background: string
+}
+
+const composeSvg = ({content, width, height, background}: ComposeOptions) =>
   `<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <svg xmlns:dc="http://purl.org/dc/elements/1.1/"
   xmlns:cc="http://creativecommons.org/ns#"
@@ -23,23 +66,26 @@ const composeSvg = ({content, width, height, background}) =>
   </g>
 </svg>\n`
 
-const anchorMap = {
+const anchorMap: Record<string, string> = {
   left: 'start',
   center: 'middle',
   right: 'end',
 }
 
-const getHtmlStyle = ({fontSize, fontWeight, fontFamily, align, color}) =>
+type HtmlStyleOptions = Pick<ColumnStyle, 'fontSize' | 'fontWeight' | 'fontFamily' | 'align' | 'color'>
+
+const getHtmlStyle = ({fontSize, fontWeight, fontFamily, align, color}: HtmlStyleOptions) =>
   [
     `fill: ${color}`,
     `font-family: ${fontFamily}`,
+
     `font-size: ${fontSize}px`,
     `font-weight: ${fontWeight}`,
     `text-align: ${align}`,
     `text-anchor: ${anchorMap[align]}`,
   ].join(';')
 
-const getTransform = ({xTransform, xOffset}) => {
+const getTransform = ({xTransform, xOffset}: Pick<ColumnStyle, 'xTransform' | 'xOffset'>): string => {
   if (!xTransform) {
     return ''
   }
@@ -47,7 +93,7 @@ const getTransform = ({xTransform, xOffset}) => {
   return `transform="matrix(${xTransform}, 0, 0, 1, ${positionCorrection}, 0)"`
 }
 
-const wrapColumn = (text, style) => {
+const wrapColumn = (text: string, style: ColumnStyle): string => {
   const htmlStyle = getHtmlStyle(style)
 
   return `  <text style="${htmlStyle}" ${getTransform(style)}>
@@ -55,9 +101,10 @@ const wrapColumn = (text, style) => {
   </text>`
 }
 
-const wrapText = ({text, yOffset, xOffset}) => `<tspan x="${xOffset}" y="${yOffset}">${text}</tspan>`
+const wrapText = ({text, yOffset, xOffset}: {text: string; yOffset: number; xOffset: number}): string =>
+  `<tspan x="${xOffset}" y="${yOffset}">${text}</tspan>`
 
-const composeText = ({lines, style, yStart}) =>
+const composeText = ({lines, style, yStart}: {lines: string[]; style: ColumnStyle; yStart: number}) =>
   lines
     .map((text, index) =>
       wrapText({
@@ -68,24 +115,24 @@ const composeText = ({lines, style, yStart}) =>
     )
     .join('')
 
-const getColumnHeight = (length, style) => length * (style.fontSize + style.marginBottom + style.marginTop)
+const getColumnHeight = (length: number, style: ColumnStyle) =>
+  length * (style.fontSize + style.marginBottom + style.marginTop)
 
-const getColumnXml = ({style, yStart, column}) => {
+const getColumnXml = ({style, yStart, column}: {style: ColumnStyle; yStart: number; column: string[]}) => {
   const lines = composeText({lines: column, style, yStart})
 
   return wrapColumn(lines, style)
 }
 
-export const createSvg = (data) => {
+export const createSvg = (data: Config) => {
   const firstStyle = {...data.style, ...data.sections[0].columns[0]}
   let yStart = firstStyle.fontSize + firstStyle.marginTop + data.height
+
   const output = []
 
   for (const section of data.sections) {
-    const {columns, content, marginTop, marginBottom} = section
-    if (marginTop) {
-      yStart += marginTop
-    }
+    const {columns, content, marginTop = 0, marginBottom} = section
+    yStart += marginTop
 
     for (const row of content) {
       const xml = row
@@ -119,7 +166,7 @@ export const createSvg = (data) => {
   }
 }
 
-export const createSvgFile = (config, output) => {
+export const createSvgFile = (config: Config, output?: string): {filename: string; height: number} => {
   const outputFile = output || path.join('.', `tmp-path-svg${Date.now()}.svg`)
 
   const {content, height} = createSvg(config)

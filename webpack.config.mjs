@@ -1,7 +1,11 @@
 import path from 'path'
 
 export default {
-  entry: './src/index.ts',
+  target: 'node',
+  entry: {
+    index: './src/index.ts',
+    cli: './src/cli.ts',
+  },
   mode: process.env.NODE_ENV !== 'production' ? 'development' : 'production',
   module: {
     rules: [
@@ -16,7 +20,7 @@ export default {
     extensions: ['.ts', '.mjs'],
   },
   output: {
-    filename: './index.js',
+    filename: './[name].js',
     path: path.resolve('dist'),
   },
   devtool: 'source-map',

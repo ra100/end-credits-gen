@@ -5,11 +5,11 @@ import path from 'path'
 import {exec} from 'child_process'
 import assert from 'assert'
 
-import {createSvgFile} from './svg.mjs'
+import {Config, createSvgFile} from './svg'
 
 const execPromise = promisify(exec)
 
-const textToPath = async (input, output) => {
+const textToPath = async (input: string, output?: string) => {
   const outputFileName = output || path.join('.', `tmp-path-svg${Date.now()}.svg`)
 
   await execPromise(`inkscape ${input} --export-text-to-path --export-filename=${outputFileName}`)
@@ -17,7 +17,7 @@ const textToPath = async (input, output) => {
   return outputFileName
 }
 
-const svgToPng = async (input, output) => {
+const svgToPng = async (input: string, output: string) => {
   if (output) {
     assert(output.slice(-4) === '.png', 'Output file must have ".png" extension')
   }
@@ -29,7 +29,7 @@ const svgToPng = async (input, output) => {
   return outputFileName
 }
 
-export const createPng = async (input, output) => {
+export const createPng = async (input: string, output: string) => {
   const pathedSvg = await textToPath(input)
   const pngPath = await svgToPng(pathedSvg, output)
 
@@ -38,7 +38,10 @@ export const createPng = async (input, output) => {
   return pngPath
 }
 
-const cropFrameToFile = ({ppf, width, height, outputWidth, outputHeight}, {frameNumber, svgImagePath, outputDir}) => {
+const cropFrameToFile = (
+  {ppf, width, height, outputWidth, outputHeight}: Config,
+  {frameNumber, svgImagePath, outputDir}: {frameNumber: number; svgImagePath: string; outputDir: string}
+) => {
   const speedFactor = outputHeight ? height / outputHeight : 1
   const offset = Math.round(frameNumber * (ppf * speedFactor))
   const filenameNumber = `000000${frameNumber + 1}`.slice(-5)
@@ -52,7 +55,7 @@ const cropFrameToFile = ({ppf, width, height, outputWidth, outputHeight}, {frame
   )
 }
 
-export const renderClip = async (config, outputDirectory) => {
+export const renderClip = async (config: Config, outputDirectory: string) => {
   const {filename, height: creditsHeight} = createSvgFile(config)
   const svgImagePath = await textToPath(filename)
 

@@ -1,21 +1,19 @@
-#!/usr/bin/env node
-
 import assert from 'assert'
 import fs from 'fs'
-import yaml from 'js-yaml'
+import {load} from 'js-yaml'
 
-import {createSvgFile} from './svg.mjs'
-import {createPng, renderClip} from './svgToPng.mjs'
+import {Config, createSvgFile} from './svg'
+import {createPng, renderClip} from './svgToPng'
 
-const importFile = (path) => fs.readFileSync(path, 'utf-8')
+const importFile = (path: string) => fs.readFileSync(path, 'utf8')
 
-const svg = (config, output) => {
+const svg = (config: Config, output: string) => {
   console.info('Assembling svg')
   createSvgFile(config, output)
   return Promise.resolve()
 }
 
-const png = async (config, output) => {
+const png = async (config: Config, output: string) => {
   console.info('Assembling svg')
   const {filename, height} = createSvgFile(config)
 
@@ -28,7 +26,7 @@ const png = async (config, output) => {
   }
 }
 
-const render = async (config, output) => {
+const render = async (config: Config, output: string) => {
   console.info('Rendering clip')
   await renderClip(config, output)
 }
@@ -41,7 +39,7 @@ const main = () => {
 
   console.info('Import config', input)
   const yamlFile = importFile(input)
-  const config = yaml.safeLoad(yamlFile)
+  const config = load(yamlFile) as Config
 
   if (output.slice(-4) === '.png') {
     return png(config, output)
