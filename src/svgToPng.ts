@@ -45,14 +45,19 @@ const cropFrameToFile = (
   const speedFactor = outputHeight ? height / outputHeight : 1
   const offset = Math.round(frameNumber * (ppf * speedFactor))
   const filenameNumber = `000000${frameNumber + 1}`.slice(-5)
+
+  const exportArea = [0, offset, width, offset + height].join(':').replace(/\./g, ',')
+
+  const inscapeArgs = [
+    svgImagePath,
+    `--export-area=${exportArea}`,
+    `--export-width=${outputWidth || width}`,
+    `--export-height=${outputHeight || height}`,
+    `--export-filename=${path.join(outputDir, `credits_${filenameNumber}.png`)}`,
+  ].join(' ')
+
   console.info('Rendering frame', filenameNumber)
-  return execPromise(
-    `inkscape ${svgImagePath} --export-area=0:${offset.toString().replace('.', ',')}:${width}:${(offset + height)
-      .toString()
-      .replace('.', ',')} --export-width=${outputWidth || width} --export-height=${
-      outputHeight || height
-    } --export-filename=${path.join(outputDir, `credits_${filenameNumber}.png`)}`
-  )
+  return execPromise(`inkscape ${inscapeArgs}`)
 }
 
 export const renderClip = async (config: Config, outputDirectory: string) => {
