@@ -1,6 +1,6 @@
 {
   // see https://www.typescriptlang.org/tsconfig to better understand tsconfigs
-  "include": ["./src", "./cdk"],
+  "include": ["svg", "cdk", "cli"],
   "exclude": ["cdk.out", "dist"],
   "compilerOptions": {
     "module": "commonjs",
@@ -31,7 +31,13 @@
     "forceConsistentCasingInFileNames": true,
     "noEmit": false,
     "outDir": "dist",
-    "allowUnreachableCode": false
+    "allowUnreachableCode": false,
+    "baseUrl": "./",
+    "paths": {
+      "@ra100/ecg-cdk": ["cdk"],
+      "@ra100/ecg-svg": ["svg/src"],
+      "@ra100/ecg-cli": ["cli/src"]
+    }
   },
   "watch": true
 }
