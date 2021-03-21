@@ -21,8 +21,11 @@ jobs:
       - name: Lint
         run: npm run lint
 
-      - name: Test
+      - name: Test CDK
         run: npm run test:cdk --ci --coverage --maxWorkers=2
+
+      - name: Test SVG
+        run: npm run test:svg --ci --coverage --maxWorkers=2
 
       - name: Build
         run: npm run build
