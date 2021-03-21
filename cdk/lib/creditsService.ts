@@ -1,10 +1,12 @@
 import path from 'path'
 
-import {Construct} from '@aws-cdk/core'
+import {Construct, Duration} from '@aws-cdk/core'
 import {LambdaIntegration, RestApi} from '@aws-cdk/aws-apigateway'
 import {NodejsFunction} from '@aws-cdk/aws-lambda-nodejs'
 import {Bucket, BucketEncryption} from '@aws-cdk/aws-s3'
 import {Runtime} from '@aws-cdk/aws-lambda'
+import {Queue} from '@aws-cdk/aws-sqs'
+import {RetentionDays} from '@aws-cdk/aws-logs'
 
 export class CreditsService extends Construct {
   constructor(scope: Construct, id: string) {
@@ -16,7 +18,12 @@ export class CreditsService extends Construct {
       versioned: false,
     })
 
-    const handler = new NodejsFunction(this, 'CreditsHandler', {
+    const queue = new Queue(this, 'CreditsSvgToPngQueue', {
+      visibilityTimeout: Duration.seconds(60), // default,
+      receiveMessageWaitTime: Duration.seconds(20), // default
+    })
+
+    const jsonToSvgLambda = new NodejsFunction(this, 'CreditsHandler', {
       entry: path.resolve(__dirname, '../../', 'svg/src/creditsHandler.ts'),
       handler: 'postCredits',
       runtime: Runtime.NODEJS_14_X,
@@ -28,17 +35,21 @@ export class CreditsService extends Construct {
       },
       environment: {
         BUCKET: bucket.bucketName,
+        QUEUE_NAME: queue.queueName,
+        QUEUE_URL: queue.queueUrl,
       },
+      logRetention: RetentionDays.TWO_WEEKS,
     })
 
-    bucket.grantReadWrite(handler) // was: handler.role);
+    bucket.grantReadWrite(jsonToSvgLambda) // was: handler.role);
+    queue.grantSendMessages(jsonToSvgLambda)
 
     const api = new RestApi(this, 'credits-api', {
       restApiName: 'Credits Service',
       description: 'This service serves widgets.',
     })
 
-    const postCredits = new LambdaIntegration(handler, {
+    const postCredits = new LambdaIntegration(jsonToSvgLambda, {
       requestTemplates: {'application/json': '{ "statusCode": "200" }'},
     })
 

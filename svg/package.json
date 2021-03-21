@@ -19,9 +19,11 @@
   "author": "ra100",
   "license": "GNU LGPLv3",
   "dependencies": {
-    "aws-sdk": "^2.868.0"
+    "@aws-sdk/client-sqs": "^3.9.0",
+    "nanoid": "^3.1.22"
   },
   "devDependencies": {
+    "@aws-sdk/types": "^3.6.1",
     "@types/aws-lambda": "^8.10.72",
     "@types/jest": "^26.0.10",
     "@types/node": "^14.14.35",
