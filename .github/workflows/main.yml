@@ -22,7 +22,7 @@ jobs:
         run: npm run lint
 
       - name: Test
-        run: npm run test --ci --coverage --maxWorkers=2
+        run: npm run test:cdk --ci --coverage --maxWorkers=2
 
       - name: Build
         run: npm run build

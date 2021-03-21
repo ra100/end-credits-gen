@@ -16,7 +16,7 @@ export class CreditsService extends Construct {
     })
 
     const handler = new NodejsFunction(this, 'CreditsHandler', {
-      entry: path.resolve(__dirname, '../', 'src/creditsHandler.ts'),
+      entry: path.resolve(__dirname, '../../', 'svg/src/creditsHandler.ts'),
       handler: 'postCredits',
       bundling: {
         externalModules: ['aws-sdk'],
