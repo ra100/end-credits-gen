@@ -4,6 +4,7 @@ import {Construct} from '@aws-cdk/core'
 import {LambdaIntegration, RestApi} from '@aws-cdk/aws-apigateway'
 import {NodejsFunction} from '@aws-cdk/aws-lambda-nodejs'
 import {Bucket, BucketEncryption} from '@aws-cdk/aws-s3'
+import {Runtime} from '@aws-cdk/aws-lambda'
 
 export class CreditsService extends Construct {
   constructor(scope: Construct, id: string) {
@@ -18,6 +19,7 @@ export class CreditsService extends Construct {
     const handler = new NodejsFunction(this, 'CreditsHandler', {
       entry: path.resolve(__dirname, '../../', 'svg/src/creditsHandler.ts'),
       handler: 'postCredits',
+      runtime: Runtime.NODEJS_14_X,
       bundling: {
         externalModules: ['aws-sdk'],
         sourceMap: true, // include source map, defaults to false

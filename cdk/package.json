@@ -5,9 +5,10 @@
   "main": "cdk/bin/index.ts",
   "scripts": {
     "test": "jest",
-    "cdk": "cdk"
+    "cdk": "cdk",
+    "template": "npm run cdk synth --no-staging > template.yaml",
+    "sam": "sam local start-api"
   },
-  "type": "module",
   "author": "ra100",
   "license": "GNU LGPLv3",
   "dependencies": {},
