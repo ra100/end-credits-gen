@@ -1,26 +1,41 @@
+import {InvocationType, Lambda} from '@aws-sdk/client-lambda'
 import type {APIGatewayProxyEvent, APIGatewayProxyResult} from 'aws-lambda'
-import {Config, createSvg} from './createSvg'
-import {queueRender} from './queue'
+import {nanoid} from 'nanoid'
+import {TextEncoder} from 'util'
 
 export const postCredits = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
-  const {body} = event
+  try {
+    const {body} = event
 
-  if (!body) {
-    return {
-      statusCode: 400,
-      body: JSON.stringify({error: 'Empty body'}),
+    if (!body) {
+      return {
+        statusCode: 400,
+        body: JSON.stringify({error: 'Empty body'}),
+      }
     }
-  }
 
-  const config = JSON.parse(body) as Config
+    const id = nanoid()
 
-  const {content, height} = createSvg(config)
+    const lambdaArn = process.env.QUEUE_LAMBDA_ARN
 
-  const id = await queueRender({content, height, config})
+    const client = new Lambda({})
 
-  return {
-    statusCode: 200,
-    headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify({content, height, id}, undefined, 2),
+    await client.invoke({
+      FunctionName: lambdaArn,
+      InvocationType: InvocationType.Event,
+      Payload: new TextEncoder().encode(JSON.stringify({config: JSON.parse(body), id})),
+    })
+
+    return {
+      statusCode: 200,
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({message: 'Render queued', id}),
+    }
+  } catch (error) {
+    return {
+      statusCode: 500,
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({error}),
+    }
   }
 }

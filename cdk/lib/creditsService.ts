@@ -23,6 +23,19 @@ export class CreditsService extends Construct {
       receiveMessageWaitTime: Duration.seconds(20), // default
     })
 
+    const queueRenderLambda = new NodejsFunction(this, 'CreditsQueueHandler', {
+      entry: path.resolve(__dirname, '../../', 'svg/src/queueHandler.ts'),
+      handler: 'createQueue',
+      runtime: Runtime.NODEJS_14_X,
+      environment: {
+        QUEUE_NAME: queue.queueName,
+        QUEUE_URL: queue.queueUrl,
+      },
+      logRetention: RetentionDays.TWO_WEEKS,
+      timeout: Duration.minutes(5),
+      memorySize: 128,
+    })
+
     const jsonToSvgLambda = new NodejsFunction(this, 'CreditsHandler', {
       entry: path.resolve(__dirname, '../../', 'svg/src/creditsHandler.ts'),
       handler: 'postCredits',
@@ -35,14 +48,16 @@ export class CreditsService extends Construct {
       },
       environment: {
         BUCKET: bucket.bucketName,
-        QUEUE_NAME: queue.queueName,
-        QUEUE_URL: queue.queueUrl,
+        QUEUE_LAMBDA_ARN: queueRenderLambda.functionArn,
       },
       logRetention: RetentionDays.TWO_WEEKS,
+      timeout: Duration.seconds(20),
+      memorySize: 128,
     })
 
-    bucket.grantReadWrite(jsonToSvgLambda) // was: handler.role);
-    queue.grantSendMessages(jsonToSvgLambda)
+    bucket.grantReadWrite(jsonToSvgLambda)
+    queue.grantSendMessages(queueRenderLambda)
+    queueRenderLambda.grantInvoke(jsonToSvgLambda)
 
     const api = new RestApi(this, 'credits-api', {
       restApiName: 'Credits Service',
