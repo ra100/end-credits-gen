@@ -26,6 +26,3 @@ jobs:
 
       - name: Test SVG
         run: npm run test:svg --ci --coverage --maxWorkers=2
-
-      - name: Build
-        run: npm run build
