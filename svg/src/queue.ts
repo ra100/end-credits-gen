@@ -3,7 +3,7 @@ import {nanoid} from 'nanoid'
 
 import {Config} from './createSvg'
 
-type RenderOptions = {area: number[]; width: number; height: number}
+export type RenderOptions = {area: number[]; width: number; height: number; frame: string}
 
 const cropDimensions = (
   {ppf, width, height, outputWidth, outputHeight}: Config,
@@ -16,6 +16,7 @@ const cropDimensions = (
     area: [0, offset, width, offset + height],
     width: outputWidth || width,
     height: outputHeight || height,
+    frame: `${frameNumber}`.padStart(5, '0'),
   }
 }
 

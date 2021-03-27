@@ -1,7 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 
-import {Config, createSvg} from '@ra100/ecg-svg/src/createSvg'
+import {Config, createSvg} from '@ra100-ecg/svg'
 
 export const createSvgFile = (config: Config, output?: string): {filename: string; height: number} => {
   const outputFile = output || path.join('.', `tmp-path-svg${Date.now()}.svg`)

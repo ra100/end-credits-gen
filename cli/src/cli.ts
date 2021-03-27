@@ -2,7 +2,7 @@ import assert from 'assert'
 import fs from 'fs'
 import {load} from 'js-yaml'
 
-import {Config} from '@ra100/ecg-svg/src/createSvg'
+import {Config} from '@ra100-ecg/svg'
 
 import {createPng, renderClip} from './svgToPng'
 import {createSvgFile} from './saveSvgFile'

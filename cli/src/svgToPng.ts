@@ -5,7 +5,7 @@ import os from 'os'
 import path from 'path'
 import {promisify} from 'util'
 
-import {Config} from '@ra100/ecg-svg/src/createSvg'
+import {Config} from '@ra100-ecg/svg/src/createSvg'
 
 import {createSvgFile} from './saveSvgFile'
 
