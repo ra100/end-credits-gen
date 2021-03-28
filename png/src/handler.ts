@@ -26,7 +26,7 @@ export const svgToPngHandler: SQSHandler = async ({Records}) => {
       stdout.write(`Rendering frame ${renderOptions.frame} done`)
 
       stdout.write(`Uploading frame ${renderOptions.frame}`)
-      await upload(pngFile, `${jobId}/${renderOptions.frame}.png`)
+      await upload(pngFile, `${jobId}/credits_${renderOptions.frame}.png`)
       stdout.write(`Uploading frame ${renderOptions.frame} done`)
     }
   } catch (error) {

@@ -55,7 +55,14 @@ RUN apk update --no-cache
 RUN apk add \
     --no-cache \
     ttf-freefont \
+    ttf-ubuntu-font-family \
     inkscape
+
+RUN mkdir -p /usr/share/fonts/custom
+COPY ./png/fonts /usr/share/fonts/custom
+
+RUN rm -rf /var/cache/* && \
+    fc-cache -f
 
 
 # Stage 4
@@ -74,8 +81,6 @@ COPY ./png ./png
 RUN npm install --prod
 
 WORKDIR ${FUNCTION_DIR}/png/dist
-
-RUN ls -la
 
 ENV NODE_ENV=production
 
