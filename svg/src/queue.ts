@@ -1,10 +1,14 @@
 import {stdout} from 'process'
-import {SendMessageBatchRequestEntry, SQS} from '@aws-sdk/client-sqs'
+
 import {nanoid} from 'nanoid'
+import {SendMessageBatchRequestEntry, SQS} from '@aws-sdk/client-sqs'
+import {S3Client} from '@aws-sdk/client-s3'
+import {Upload} from '@aws-sdk/lib-storage'
 
 import {Config} from './createSvg'
 
 export type RenderOptions = {area: number[]; width: number; height: number; frame: string}
+export type Meta = {frameCount: number; status: 'started' | 'finished'}
 
 const cropDimensions = (
   {ppf, width, height, outputWidth, outputHeight}: Config,
@@ -51,6 +55,15 @@ const sender = (queue: SQS, queueUrl: string) => async (entries: SendMessageBatc
   await queue.sendMessageBatch({QueueUrl: queueUrl, Entries: [...entries]})
 }
 
+const uploadMeta = async (bucketName: string, id: string, meta: Meta) => {
+  const multipartUpload = new Upload({
+    client: new S3Client({}),
+    params: {Bucket: bucketName, Key: `${id}/meta.json`, Body: JSON.stringify(meta)},
+  })
+
+  await multipartUpload.done()
+}
+
 export const queueRender = async ({
   content,
   height,
@@ -63,20 +76,26 @@ export const queueRender = async ({
   id: string
 }): Promise<void> => {
   const queueUrl = process.env.QUEUE_URL
+  const bucketName = process.env.BUCKET
 
   if (!queueUrl) {
     throw new Error('Missing QUEUE_URL environment variable')
+  }
+
+  if (!bucketName) {
+    throw new Error('Missing BUCKET environment variable')
   }
 
   const queue = new SQS({})
   const addToQueue = sender(queue, queueUrl)
 
   const batch = createFrameBatch(config, height)
+  const frameCount = batch.length
 
   const entries = new Set<SendMessageBatchRequestEntry>()
 
   for (const frame of batch) {
-    entries.add(createMesageBody(id, content, batch.length)(frame))
+    entries.add(createMesageBody(id, content, frameCount)(frame))
 
     if (entries.size >= 9) {
       addToQueue([...entries])
@@ -88,4 +107,6 @@ export const queueRender = async ({
     addToQueue([...entries])
     entries.clear()
   }
+
+  await uploadMeta(bucketName, id, {frameCount, status: 'started'})
 }

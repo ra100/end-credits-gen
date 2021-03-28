@@ -10,7 +10,7 @@ import {Queue} from '@aws-cdk/aws-sqs'
 import {Bucket} from '@aws-cdk/aws-s3'
 import {DockerImageAsset} from '@aws-cdk/aws-ecr-assets'
 
-export const getQueueRenderLambda = (scope: Construct, queue: Queue): NodejsFunction =>
+export const getQueueRenderLambda = (scope: Construct, queue: Queue, bucket: Bucket): NodejsFunction =>
   new NodejsFunction(scope, 'CreditsQueueHandler', {
     entry: path.resolve(__dirname, '../../', 'svg/src/queueHandler.ts'),
     handler: 'createQueue',
@@ -18,6 +18,7 @@ export const getQueueRenderLambda = (scope: Construct, queue: Queue): NodejsFunc
     environment: {
       QUEUE_NAME: queue.queueName,
       QUEUE_URL: queue.queueUrl,
+      BUCKET: bucket.bucketName,
     },
     logRetention: RetentionDays.TWO_WEEKS,
     timeout: Duration.minutes(5),
@@ -60,6 +61,7 @@ export const getRenderLambda = (scope: Construct, bucket: Bucket): DockerImageFu
     environment: {
       BUCKET: bucket.bucketName,
     },
+    logRetention: RetentionDays.TWO_WEEKS,
     timeout: Duration.minutes(5),
     memorySize: 256,
   })

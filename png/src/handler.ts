@@ -4,10 +4,16 @@ import type {SQSHandler, SQSMessageAttributes} from 'aws-lambda'
 import type {RenderOptions} from '@ra100-ecg/svg/src/queue'
 
 import {renderPng} from './render'
-import {upload} from './upload'
+import {checkCompleted, upload} from './storage'
 
 export const svgToPngHandler: SQSHandler = async ({Records}) => {
   try {
+    const bucketName = process.env.BUCKET
+
+    if (!bucketName) {
+      throw new Error('Missing BUCKET environment variable')
+    }
+
     for (const record of Records) {
       const messageAttributes: SQSMessageAttributes = record.messageAttributes
       const renderOptions = JSON.parse(record.body) as RenderOptions
@@ -25,9 +31,8 @@ export const svgToPngHandler: SQSHandler = async ({Records}) => {
       const pngFile = renderPng(svg, renderOptions)
       stdout.write(`Rendering frame ${renderOptions.frame} done`)
 
-      stdout.write(`Uploading frame ${renderOptions.frame}`)
-      await upload(pngFile, `${jobId}/credits_${renderOptions.frame}.png`)
-      stdout.write(`Uploading frame ${renderOptions.frame} done`)
+      await upload(bucketName, pngFile, `${jobId}/credits_${renderOptions.frame}.png`)
+      await checkCompleted(bucketName, jobId)
     }
   } catch (error) {
     stderr.write(`ERROR: ${error}`)

@@ -11,17 +11,18 @@ export class CreditsService extends Construct {
     super(scope, id)
 
     const bucket = getBucket(this)
-    const rederQueue = getRenderQueue(this)
-    const queueRenderLambda = getQueueRenderLambda(this, rederQueue)
+    const renderQueue = getRenderQueue(this)
+    const queueRenderLambda = getQueueRenderLambda(this, renderQueue, bucket)
     const jsonToSvgLambda = getJsonToSvgLambda(this, queueRenderLambda)
     const renderLambda = getRenderLambda(this, bucket)
 
     bucket.grantReadWrite(renderLambda)
-    rederQueue.grantSendMessages(queueRenderLambda)
-    rederQueue.grantConsumeMessages(renderLambda)
+    bucket.grantReadWrite(queueRenderLambda)
+    renderQueue.grantSendMessages(queueRenderLambda)
+    renderQueue.grantConsumeMessages(renderLambda)
     queueRenderLambda.grantInvoke(jsonToSvgLambda)
 
-    renderLambda.addEventSource(new SqsEventSource(rederQueue, {batchSize: 5}))
+    renderLambda.addEventSource(new SqsEventSource(renderQueue, {batchSize: 5}))
 
     getApiGateway(this, jsonToSvgLambda)
   }
