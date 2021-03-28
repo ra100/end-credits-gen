@@ -46,6 +46,11 @@ const createMesageBody = (jobId: string, svg: string, length: number) => (
   Id: jobId + nanoid(),
 })
 
+const sender = (queue: SQS, queueUrl: string) => async (entries: SendMessageBatchRequestEntry[]) => {
+  stdout.write('Sending to Queue\n')
+  await queue.sendMessageBatch({QueueUrl: queueUrl, Entries: [...entries]})
+}
+
 export const queueRender = async ({
   content,
   height,
@@ -64,6 +69,7 @@ export const queueRender = async ({
   }
 
   const queue = new SQS({})
+  const addToQueue = sender(queue, queueUrl)
 
   const batch = createFrameBatch(config, height)
 
@@ -73,14 +79,13 @@ export const queueRender = async ({
     entries.add(createMesageBody(id, content, batch.length)(frame))
 
     if (entries.size >= 9) {
-      stdout.write('Sending to Queue\n')
-      await queue.sendMessageBatch({QueueUrl: queueUrl, Entries: [...entries]})
-      // await Promise.all([...entries].map((message) => queue.sendMessage(message)))
+      addToQueue([...entries])
       entries.clear()
     }
   }
 
   if (entries.size > 0) {
+    addToQueue([...entries])
     entries.clear()
   }
 }

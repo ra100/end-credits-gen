@@ -71,7 +71,6 @@ const getHtmlStyle = ({fontSize, fontWeight, fontFamily, align, color}: HtmlStyl
   [
     `fill: ${color}`,
     `font-family: ${fontFamily}`,
-
     `font-size: ${fontSize}px`,
     `font-weight: ${fontWeight}`,
     `text-align: ${align}`,
