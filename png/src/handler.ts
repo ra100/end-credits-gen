@@ -1,3 +1,4 @@
+import {stdout} from 'process'
 import type {SQSHandler, SQSMessageAttributes} from 'aws-lambda'
 
 import type {RenderOptions} from '@ra100-ecg/svg/src/queue'
@@ -20,10 +21,13 @@ export const svgToPngHandler: SQSHandler = async ({Records}) => {
       if (!jobId) {
         throw new Error('JobId is empty')
       }
-
+      stdout.write(`Rendering frame ${renderOptions.frame}`)
       const pngFile = renderPng(svg, renderOptions)
+      stdout.write(`Rendering frame ${renderOptions.frame} done`)
 
+      stdout.write(`Uploading frame ${renderOptions.frame}`)
       await upload(pngFile, `${jobId}/${renderOptions.frame}.png`)
+      stdout.write(`Uploading frame ${renderOptions.frame} done`)
     }
   } catch (error) {
     console.error(error)

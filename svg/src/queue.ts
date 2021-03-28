@@ -16,7 +16,8 @@ const cropDimensions = (
     area: [0, offset, width, offset + height],
     width: outputWidth || width,
     height: outputHeight || height,
-    frame: `${frameNumber}`.padStart(5, '0'),
+    // start counting from 1 insteat of 0
+    frame: `${frameNumber + 1}`.padStart(5, '0'),
   }
 }
 
@@ -32,9 +33,15 @@ const createFrameBatch = (config: Config, creditsHeight: number): RenderOptions[
   return batch
 }
 
-const createMesageBody = (jobId: string, svg: string) => (batchData: RenderOptions): SendMessageBatchRequestEntry => ({
+const createMesageBody = (jobId: string, svg: string, length: number) => (
+  batchData: RenderOptions
+): SendMessageBatchRequestEntry => ({
   MessageBody: JSON.stringify(batchData),
-  MessageAttributes: {jobId: {DataType: 'String', StringValue: jobId}, svg: {DataType: 'String', StringValue: svg}},
+  MessageAttributes: {
+    jobId: {DataType: 'String', StringValue: jobId},
+    svg: {DataType: 'String', StringValue: svg},
+    length: {DataType: 'Number', StringValue: `${length}`},
+  },
   Id: jobId + nanoid(),
 })
 
@@ -62,7 +69,7 @@ export const queueRender = async ({
   const entries = new Set<SendMessageBatchRequestEntry>()
 
   for (const frame of batch) {
-    entries.add(createMesageBody(id, content)(frame))
+    entries.add(createMesageBody(id, content, batch.length)(frame))
 
     if (entries.size >= 9) {
       console.log('Sending to Queue')

@@ -29,7 +29,6 @@ RUN apk add --no-cache \
 
 ARG NPM_CONFIG_PREFIX
 
-ENV NODE_ENV=production
 ENV PATH=$PATH:${NPM_CONFIG_PREFIX}/bin
 
 WORKDIR ${NPM_CONFIG_PREFIX}
@@ -69,8 +68,16 @@ ARG FUNCTION_DIR
 # Set working directory to function root directory
 WORKDIR ${FUNCTION_DIR}
 
-# Copy in the built dependencies
-COPY --from=build-image ${FUNCTION_DIR} ${FUNCTION_DIR}
+COPY ./package*.json ./
+COPY ./png ./png
+
+RUN npm install --prod
+
+WORKDIR ${FUNCTION_DIR}/png/dist
+
+RUN ls -la
+
+ENV NODE_ENV=production
 
 ENTRYPOINT ["aws-lambda-ric"]
-CMD ["app.handler"]
+CMD ["handler.svgToPngHandler"]

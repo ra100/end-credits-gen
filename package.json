@@ -12,6 +12,7 @@
     "src"
   ],
   "scripts": {
+    "build": "tsc -b",
     "lint": "eslint --ext mjs --ext ts .",
     "test:cdk": "cd cdk && npm run test",
     "test:svg": "cd svg && npm run test"

@@ -40,7 +40,6 @@
       "@ra100-ecg/cli": ["cli"],
       "@ra100-ecg/png": ["png"]
     },
-    "tsBuildInfoFile": "./node_modules/.cache/@ra100-ecg/tsconfig.tsbuildinfo"
   },
   "watch": true
 }
