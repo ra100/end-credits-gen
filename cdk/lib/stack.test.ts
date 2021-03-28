@@ -24,6 +24,18 @@ test('Stack', () => {
                   },
                 ],
               },
+              LifecycleConfiguration: {
+                Rules: [
+                  {
+                    ExpirationInDays: 10,
+                    NoncurrentVersionExpirationInDays: 1,
+                    Status: 'Enabled',
+                  },
+                ],
+              },
+              VersioningConfiguration: {
+                Status: 'Enabled',
+              },
             },
             UpdateReplacePolicy: 'Retain',
             DeletionPolicy: 'Retain',
@@ -66,7 +78,7 @@ test('Stack', () => {
             Type: 'AWS::SQS::Queue',
             Properties: {
               ReceiveMessageWaitTimeSeconds: 20,
-              VisibilityTimeout: 60,
+              VisibilityTimeout: 360,
             },
             UpdateReplacePolicy: 'Delete',
             DeletionPolicy: 'Delete',
@@ -131,7 +143,7 @@ test('Stack', () => {
               Code: {
                 S3Bucket: {
                   Ref:
-                    'AssetParameters430ee63e0d3ce7a823daf95159176ff923471d25a857b99ab0233cde675759fdS3Bucket12179602',
+                    'AssetParametersf608ae696d7d0e7abdcd6b0b144f8b3444e434d20a08e3e460d2ace3af46ef57S3Bucket30908983',
                 },
                 S3Key: {
                   'Fn::Join': [
@@ -145,7 +157,7 @@ test('Stack', () => {
                               '||',
                               {
                                 Ref:
-                                  'AssetParameters430ee63e0d3ce7a823daf95159176ff923471d25a857b99ab0233cde675759fdS3VersionKeyAFD6BE2A',
+                                  'AssetParametersf608ae696d7d0e7abdcd6b0b144f8b3444e434d20a08e3e460d2ace3af46ef57S3VersionKey0C95FDFA',
                               },
                             ],
                           },
@@ -159,7 +171,7 @@ test('Stack', () => {
                               '||',
                               {
                                 Ref:
-                                  'AssetParameters430ee63e0d3ce7a823daf95159176ff923471d25a857b99ab0233cde675759fdS3VersionKeyAFD6BE2A',
+                                  'AssetParametersf608ae696d7d0e7abdcd6b0b144f8b3444e434d20a08e3e460d2ace3af46ef57S3VersionKey0C95FDFA',
                               },
                             ],
                           },
@@ -250,33 +262,6 @@ test('Stack', () => {
               PolicyDocument: {
                 Statement: [
                   {
-                    Action: [
-                      's3:GetObject*',
-                      's3:GetBucket*',
-                      's3:List*',
-                      's3:DeleteObject*',
-                      's3:PutObject*',
-                      's3:Abort*',
-                    ],
-                    Effect: 'Allow',
-                    Resource: [
-                      {
-                        'Fn::GetAtt': ['CreditsCreditsStoreDC9BDB5C', 'Arn'],
-                      },
-                      {
-                        'Fn::Join': [
-                          '',
-                          [
-                            {
-                              'Fn::GetAtt': ['CreditsCreditsStoreDC9BDB5C', 'Arn'],
-                            },
-                            '/*',
-                          ],
-                        ],
-                      },
-                    ],
-                  },
-                  {
                     Action: 'lambda:InvokeFunction',
                     Effect: 'Allow',
                     Resource: {
@@ -300,7 +285,7 @@ test('Stack', () => {
               Code: {
                 S3Bucket: {
                   Ref:
-                    'AssetParametersc17eb41ec0375e88954f86b9bf684f6487ca1a76cc12bdb6e64b97eef4b5fea2S3Bucket4D63B4C1',
+                    'AssetParameters4986e65e4068c14ad56ff1fc6e3bbea82aa7ebeb32a8144668398e9e5d8e81d0S3Bucket694E06B3',
                 },
                 S3Key: {
                   'Fn::Join': [
@@ -314,7 +299,7 @@ test('Stack', () => {
                               '||',
                               {
                                 Ref:
-                                  'AssetParametersc17eb41ec0375e88954f86b9bf684f6487ca1a76cc12bdb6e64b97eef4b5fea2S3VersionKey9BB6B650',
+                                  'AssetParameters4986e65e4068c14ad56ff1fc6e3bbea82aa7ebeb32a8144668398e9e5d8e81d0S3VersionKeyCECCAEF5',
                               },
                             ],
                           },
@@ -328,7 +313,7 @@ test('Stack', () => {
                               '||',
                               {
                                 Ref:
-                                  'AssetParametersc17eb41ec0375e88954f86b9bf684f6487ca1a76cc12bdb6e64b97eef4b5fea2S3VersionKey9BB6B650',
+                                  'AssetParameters4986e65e4068c14ad56ff1fc6e3bbea82aa7ebeb32a8144668398e9e5d8e81d0S3VersionKeyCECCAEF5',
                               },
                             ],
                           },
@@ -343,9 +328,6 @@ test('Stack', () => {
               },
               Environment: {
                 Variables: {
-                  BUCKET: {
-                    Ref: 'CreditsCreditsStoreDC9BDB5C',
-                  },
                   QUEUE_LAMBDA_ARN: {
                     'Fn::GetAtt': ['CreditsCreditsQueueHandler7299656C', 'Arn'],
                   },
@@ -380,6 +362,149 @@ test('Stack', () => {
                 ],
               },
               RetentionInDays: 14,
+            },
+          },
+          CreditsCreditsPngRenderHandlerServiceRoleDF2DD6B9: {
+            Type: 'AWS::IAM::Role',
+            Properties: {
+              AssumeRolePolicyDocument: {
+                Statement: [
+                  {
+                    Action: 'sts:AssumeRole',
+                    Effect: 'Allow',
+                    Principal: {
+                      Service: 'lambda.amazonaws.com',
+                    },
+                  },
+                ],
+                Version: '2012-10-17',
+              },
+              ManagedPolicyArns: [
+                {
+                  'Fn::Join': [
+                    '',
+                    [
+                      'arn:',
+                      {
+                        Ref: 'AWS::Partition',
+                      },
+                      ':iam::aws:policy/service-role/AWSLambdaBasicExecutionRole',
+                    ],
+                  ],
+                },
+              ],
+            },
+          },
+          CreditsCreditsPngRenderHandlerServiceRoleDefaultPolicy678394A4: {
+            Type: 'AWS::IAM::Policy',
+            Properties: {
+              PolicyDocument: {
+                Statement: [
+                  {
+                    Action: [
+                      's3:GetObject*',
+                      's3:GetBucket*',
+                      's3:List*',
+                      's3:DeleteObject*',
+                      's3:PutObject*',
+                      's3:Abort*',
+                    ],
+                    Effect: 'Allow',
+                    Resource: [
+                      {
+                        'Fn::GetAtt': ['CreditsCreditsStoreDC9BDB5C', 'Arn'],
+                      },
+                      {
+                        'Fn::Join': [
+                          '',
+                          [
+                            {
+                              'Fn::GetAtt': ['CreditsCreditsStoreDC9BDB5C', 'Arn'],
+                            },
+                            '/*',
+                          ],
+                        ],
+                      },
+                    ],
+                  },
+                  {
+                    Action: [
+                      'sqs:ReceiveMessage',
+                      'sqs:ChangeMessageVisibility',
+                      'sqs:GetQueueUrl',
+                      'sqs:DeleteMessage',
+                      'sqs:GetQueueAttributes',
+                    ],
+                    Effect: 'Allow',
+                    Resource: {
+                      'Fn::GetAtt': ['CreditsCreditsSvgToPngQueue430F2A4D', 'Arn'],
+                    },
+                  },
+                ],
+                Version: '2012-10-17',
+              },
+              PolicyName: 'CreditsCreditsPngRenderHandlerServiceRoleDefaultPolicy678394A4',
+              Roles: [
+                {
+                  Ref: 'CreditsCreditsPngRenderHandlerServiceRoleDF2DD6B9',
+                },
+              ],
+            },
+          },
+          CreditsCreditsPngRenderHandlerD36CE69C: {
+            Type: 'AWS::Lambda::Function',
+            Properties: {
+              Code: {
+                ImageUri: {
+                  'Fn::Join': [
+                    '',
+                    [
+                      {
+                        Ref: 'AWS::AccountId',
+                      },
+                      '.dkr.ecr.',
+                      {
+                        Ref: 'AWS::Region',
+                      },
+                      '.',
+                      {
+                        Ref: 'AWS::URLSuffix',
+                      },
+                      '/aws-cdk/assets:f2caf3cdcb6b6efa93b0b29b1a0bbfda638d24faaa478f3520661d0e7fc5a536',
+                    ],
+                  ],
+                },
+              },
+              Role: {
+                'Fn::GetAtt': ['CreditsCreditsPngRenderHandlerServiceRoleDF2DD6B9', 'Arn'],
+              },
+              Environment: {
+                Variables: {
+                  BUCKET: {
+                    Ref: 'CreditsCreditsStoreDC9BDB5C',
+                  },
+                },
+              },
+              FunctionName: 'renderCredits',
+              MemorySize: 256,
+              PackageType: 'Image',
+              Timeout: 300,
+            },
+            DependsOn: [
+              'CreditsCreditsPngRenderHandlerServiceRoleDefaultPolicy678394A4',
+              'CreditsCreditsPngRenderHandlerServiceRoleDF2DD6B9',
+            ],
+          },
+          CreditsCreditsPngRenderHandlerSqsEventSourceMyTestStackCreditsCreditsSvgToPngQueue8373D13DE9A60204: {
+            Type: 'AWS::Lambda::EventSourceMapping',
+            Properties: {
+              FunctionName: {
+                Ref: 'CreditsCreditsPngRenderHandlerD36CE69C',
+              },
+              BatchSize: 5,
+              EventSourceArn: {
+                'Fn::GetAtt': ['CreditsCreditsSvgToPngQueue430F2A4D', 'Arn'],
+              },
             },
           },
           Creditscreditsapi548AF886: {
@@ -712,17 +837,17 @@ test('Stack', () => {
           },
         },
         Parameters: {
-          AssetParameters430ee63e0d3ce7a823daf95159176ff923471d25a857b99ab0233cde675759fdS3Bucket12179602: {
+          AssetParametersf608ae696d7d0e7abdcd6b0b144f8b3444e434d20a08e3e460d2ace3af46ef57S3Bucket30908983: {
             Type: 'String',
-            Description: 'S3 bucket for asset "430ee63e0d3ce7a823daf95159176ff923471d25a857b99ab0233cde675759fd"',
+            Description: 'S3 bucket for asset "f608ae696d7d0e7abdcd6b0b144f8b3444e434d20a08e3e460d2ace3af46ef57"',
           },
-          AssetParameters430ee63e0d3ce7a823daf95159176ff923471d25a857b99ab0233cde675759fdS3VersionKeyAFD6BE2A: {
+          AssetParametersf608ae696d7d0e7abdcd6b0b144f8b3444e434d20a08e3e460d2ace3af46ef57S3VersionKey0C95FDFA: {
             Type: 'String',
-            Description: 'S3 key for asset version "430ee63e0d3ce7a823daf95159176ff923471d25a857b99ab0233cde675759fd"',
+            Description: 'S3 key for asset version "f608ae696d7d0e7abdcd6b0b144f8b3444e434d20a08e3e460d2ace3af46ef57"',
           },
-          AssetParameters430ee63e0d3ce7a823daf95159176ff923471d25a857b99ab0233cde675759fdArtifactHash4477E1D3: {
+          AssetParametersf608ae696d7d0e7abdcd6b0b144f8b3444e434d20a08e3e460d2ace3af46ef57ArtifactHashEB312C37: {
             Type: 'String',
-            Description: 'Artifact hash for asset "430ee63e0d3ce7a823daf95159176ff923471d25a857b99ab0233cde675759fd"',
+            Description: 'Artifact hash for asset "f608ae696d7d0e7abdcd6b0b144f8b3444e434d20a08e3e460d2ace3af46ef57"',
           },
           AssetParameters67b7823b74bc135986aa72f889d6a8da058d0c4a20cbc2dfc6f78995fdd2fc24S3Bucket4D46ABB5: {
             Type: 'String',
@@ -736,21 +861,21 @@ test('Stack', () => {
             Type: 'String',
             Description: 'Artifact hash for asset "67b7823b74bc135986aa72f889d6a8da058d0c4a20cbc2dfc6f78995fdd2fc24"',
           },
-          AssetParametersc17eb41ec0375e88954f86b9bf684f6487ca1a76cc12bdb6e64b97eef4b5fea2S3Bucket4D63B4C1: {
+          AssetParameters4986e65e4068c14ad56ff1fc6e3bbea82aa7ebeb32a8144668398e9e5d8e81d0S3Bucket694E06B3: {
             Type: 'String',
-            Description: 'S3 bucket for asset "c17eb41ec0375e88954f86b9bf684f6487ca1a76cc12bdb6e64b97eef4b5fea2"',
+            Description: 'S3 bucket for asset "4986e65e4068c14ad56ff1fc6e3bbea82aa7ebeb32a8144668398e9e5d8e81d0"',
           },
-          AssetParametersc17eb41ec0375e88954f86b9bf684f6487ca1a76cc12bdb6e64b97eef4b5fea2S3VersionKey9BB6B650: {
+          AssetParameters4986e65e4068c14ad56ff1fc6e3bbea82aa7ebeb32a8144668398e9e5d8e81d0S3VersionKeyCECCAEF5: {
             Type: 'String',
-            Description: 'S3 key for asset version "c17eb41ec0375e88954f86b9bf684f6487ca1a76cc12bdb6e64b97eef4b5fea2"',
+            Description: 'S3 key for asset version "4986e65e4068c14ad56ff1fc6e3bbea82aa7ebeb32a8144668398e9e5d8e81d0"',
           },
-          AssetParametersc17eb41ec0375e88954f86b9bf684f6487ca1a76cc12bdb6e64b97eef4b5fea2ArtifactHash87C23C4A: {
+          AssetParameters4986e65e4068c14ad56ff1fc6e3bbea82aa7ebeb32a8144668398e9e5d8e81d0ArtifactHash9CB6EBB1: {
             Type: 'String',
-            Description: 'Artifact hash for asset "c17eb41ec0375e88954f86b9bf684f6487ca1a76cc12bdb6e64b97eef4b5fea2"',
+            Description: 'Artifact hash for asset "4986e65e4068c14ad56ff1fc6e3bbea82aa7ebeb32a8144668398e9e5d8e81d0"',
           },
         },
       },
-      MatchStyle.EXACT
+      MatchStyle.NO_REPLACES
     )
   )
 })
