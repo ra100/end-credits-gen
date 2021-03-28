@@ -8,6 +8,7 @@ import {promisify} from 'util'
 import {Config} from '@ra100-ecg/svg/src/createSvg'
 
 import {createSvgFile} from './saveSvgFile'
+import {stdout} from 'process'
 
 const execPromise = promisify(exec)
 
@@ -58,7 +59,7 @@ const cropFrameToFile = (
     `--export-filename=${path.join(outputDir, `credits_${filenameNumber}.png`)}`,
   ].join(' ')
 
-  console.info('Rendering frame', filenameNumber)
+  stdout.write(`Rendering frame ${filenameNumber}\n`)
   return execPromise(`inkscape ${inscapeArgsuments}`)
 }
 
@@ -70,7 +71,7 @@ export const renderClip = async (config: Config, outputDirectory: string): Promi
   const frameCount = Math.floor(((creditsHeight - config.height) * sizeFactor) / config.ppf)
   const cpus = os.cpus().length
 
-  console.info('Rendering', frameCount, 'frames')
+  stdout.write(`Rendering ${frameCount} frames`)
   try {
     await execPromise(`mkdir -p ${outputDirectory}`)
 

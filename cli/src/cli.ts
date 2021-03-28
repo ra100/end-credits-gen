@@ -1,3 +1,4 @@
+import {stderr, stdout} from 'process'
 import assert from 'assert'
 import fs from 'fs'
 import {load} from 'js-yaml'
@@ -10,16 +11,16 @@ import {createSvgFile} from './saveSvgFile'
 const importFile = (path: string) => fs.readFileSync(path, 'utf8')
 
 const svg = (config: Config, output: string) => {
-  console.info('Assembling svg')
+  stdout.write('Assembling svg\n')
   createSvgFile(config, output)
   return Promise.resolve()
 }
 
 const png = async (config: Config, output: string) => {
-  console.info('Assembling svg')
+  stdout.write('Assembling svg\n')
   const {filename, height} = createSvgFile(config)
 
-  console.info('Creating PNG')
+  stdout.write('Creating PNG\n')
   try {
     await createPng(filename, output)
     return {height}
@@ -29,7 +30,7 @@ const png = async (config: Config, output: string) => {
 }
 
 const render = async (config: Config, output: string) => {
-  console.info('Rendering clip')
+  stdout.write('Rendering clip\n')
   await renderClip(config, output)
 }
 
@@ -39,7 +40,7 @@ const main = () => {
   assert(!!input, 'input file needs to be specified')
   assert(!!output, 'output file or folder needs to be specified')
 
-  console.info('Import config', input)
+  stdout.write(`Import config ${input}\n`)
   const yamlFile = importFile(input)
   const config = load(yamlFile) as Config
 
@@ -56,6 +57,6 @@ const main = () => {
 
 main()
   .then(() => {
-    console.info('Done')
+    stdout.write('Done\n')
   })
-  .catch(console.error)
+  .catch(stderr.write)

@@ -1,4 +1,4 @@
-import {stdout} from 'process'
+import {stderr, stdout} from 'process'
 import type {SQSHandler, SQSMessageAttributes} from 'aws-lambda'
 
 import type {RenderOptions} from '@ra100-ecg/svg/src/queue'
@@ -30,6 +30,6 @@ export const svgToPngHandler: SQSHandler = async ({Records}) => {
       stdout.write(`Uploading frame ${renderOptions.frame} done`)
     }
   } catch (error) {
-    console.error(error)
+    stderr.write(`ERROR: ${error}`)
   }
 }

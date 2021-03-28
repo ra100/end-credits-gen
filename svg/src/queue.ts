@@ -1,3 +1,4 @@
+import {stdout} from 'process'
 import {SendMessageBatchRequestEntry, SQS} from '@aws-sdk/client-sqs'
 import {nanoid} from 'nanoid'
 
@@ -72,7 +73,7 @@ export const queueRender = async ({
     entries.add(createMesageBody(id, content, batch.length)(frame))
 
     if (entries.size >= 9) {
-      console.log('Sending to Queue')
+      stdout.write('Sending to Queue\n')
       await queue.sendMessageBatch({QueueUrl: queueUrl, Entries: [...entries]})
       // await Promise.all([...entries].map((message) => queue.sendMessage(message)))
       entries.clear()
