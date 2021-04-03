@@ -4,7 +4,7 @@ import type {SQSHandler, SQSMessageAttributes} from 'aws-lambda'
 import type {RenderOptions} from '@ra100-ecg/svg/src/queue'
 
 import {renderPng} from './render'
-import {checkCompleted, upload} from './storage'
+import {upload} from './storage'
 
 export const svgToPngHandler: SQSHandler = async ({Records}) => {
   try {
@@ -32,7 +32,6 @@ export const svgToPngHandler: SQSHandler = async ({Records}) => {
       stdout.write(`Rendering frame ${renderOptions.frame} done`)
 
       await upload(bucketName, pngFile, `${jobId}/credits_${renderOptions.frame}.png`)
-      await checkCompleted(bucketName, jobId)
     }
   } catch (error) {
     stderr.write(`ERROR: ${error}`)

@@ -2,19 +2,24 @@ import {LambdaIntegration, RestApi} from '@aws-cdk/aws-apigateway'
 import {NodejsFunction} from '@aws-cdk/aws-lambda-nodejs'
 import {Construct} from '@aws-cdk/core'
 
-export const getApiGateway = (scope: Construct, lambda: NodejsFunction): RestApi => {
+export const getApiGateway = (scope: Construct, startLambda: NodejsFunction, statusLambda: NodejsFunction): RestApi => {
   const api = new RestApi(scope, 'credits-api', {
     restApiName: 'Credits Service',
-    description: 'This service serves widgets.',
+    description: 'This service renders end credits crawl.',
   })
 
-  const postCredits = new LambdaIntegration(lambda, {
+  const postCredits = new LambdaIntegration(startLambda, {
     requestTemplates: {'application/json': '{ "statusCode": "200" }'},
   })
 
-  const creditsRoute = api.root.addResource('credits')
+  const getStatus = new LambdaIntegration(statusLambda)
 
-  creditsRoute.addMethod('POST', postCredits) // GET /
+  const creditsRoute = api.root.addResource('credits')
+  const statusRoute = creditsRoute.addResource('{jobId}')
+
+  creditsRoute.addMethod('POST', postCredits)
+  creditsRoute.addMethod('GET')
+  statusRoute.addMethod('GET', getStatus)
 
   return api
 }

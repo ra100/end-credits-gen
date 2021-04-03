@@ -8,7 +8,7 @@ export const getBucket = (scope: Construct): Bucket => {
     versioned: true,
   })
 
-  bucket.addLifecycleRule({expiration: Duration.days(10), noncurrentVersionExpiration: Duration.days(1)})
+  bucket.addLifecycleRule({expiration: Duration.days(1), noncurrentVersionExpiration: Duration.days(1)})
 
   return bucket
 }

@@ -5,7 +5,7 @@ import {TextEncoder} from 'util'
 
 export const postCredits = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   try {
-    const {body} = event
+    const {body, path} = event
 
     if (!body) {
       return {
@@ -29,7 +29,7 @@ export const postCredits = async (event: APIGatewayProxyEvent): Promise<APIGatew
     return {
       statusCode: 200,
       headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({message: 'Render queued', id}),
+      body: JSON.stringify({message: 'Render queued', id, statusLink: `${path}/${id}`}),
     }
   } catch (error) {
     return {

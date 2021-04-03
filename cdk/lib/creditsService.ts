@@ -1,7 +1,7 @@
 import {Construct} from '@aws-cdk/core'
 import {SqsEventSource} from '@aws-cdk/aws-lambda-event-sources'
 
-import {getJsonToSvgLambda, getQueueRenderLambda, getRenderLambda} from './lambdas'
+import {getJsonToSvgLambda, getQueueRenderLambda, getRenderLambda, getStatusLambda} from './lambdas'
 import {getApiGateway} from './apiGateway'
 import {getBucket} from './bucket'
 import {getRenderQueue} from './queue'
@@ -15,15 +15,17 @@ export class CreditsService extends Construct {
     const queueRenderLambda = getQueueRenderLambda(this, renderQueue, bucket)
     const jsonToSvgLambda = getJsonToSvgLambda(this, queueRenderLambda)
     const renderLambda = getRenderLambda(this, bucket)
+    const statusLambda = getStatusLambda(this, bucket)
 
     bucket.grantReadWrite(renderLambda)
     bucket.grantReadWrite(queueRenderLambda)
+    bucket.grantReadWrite(statusLambda)
     renderQueue.grantSendMessages(queueRenderLambda)
     renderQueue.grantConsumeMessages(renderLambda)
     queueRenderLambda.grantInvoke(jsonToSvgLambda)
 
     renderLambda.addEventSource(new SqsEventSource(renderQueue, {batchSize: 5}))
 
-    getApiGateway(this, jsonToSvgLambda)
+    getApiGateway(this, jsonToSvgLambda, statusLambda)
   }
 }

@@ -5,7 +5,8 @@
     "cdk",
     "svg",
     "cli",
-    "png"
+    "png",
+    "result"
   ],
   "files": [
     "dist",

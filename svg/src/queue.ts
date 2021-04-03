@@ -8,7 +8,12 @@ import {Upload} from '@aws-sdk/lib-storage'
 import {Config} from './createSvg'
 
 export type RenderOptions = {area: number[]; width: number; height: number; frame: string}
-export type Meta = {frameCount: number; status: 'started' | 'finished'}
+export type Meta = {
+  targetFrames: number
+  currentFrames: number
+  status: 'started' | 'finished'
+  downloadUrl?: string
+}
 
 const cropDimensions = (
   {ppf, width, height, outputWidth, outputHeight}: Config,
@@ -108,5 +113,9 @@ export const queueRender = async ({
     entries.clear()
   }
 
-  await uploadMeta(bucketName, id, {frameCount, status: 'started'})
+  await uploadMeta(bucketName, id, {
+    targetFrames: frameCount,
+    currentFrames: 0,
+    status: 'started',
+  })
 }

@@ -66,3 +66,16 @@ export const getRenderLambda = (scope: Construct, bucket: Bucket): DockerImageFu
     memorySize: 256,
   })
 }
+
+export const getStatusLambda = (scope: Construct, bucket: Bucket): NodejsFunction =>
+  new NodejsFunction(scope, 'CreditsStatusHandler', {
+    entry: path.resolve(__dirname, '../../', 'result/src/handler.ts'),
+    handler: 'getStatus',
+    runtime: Runtime.NODEJS_14_X,
+    environment: {
+      BUCKET: bucket.bucketName,
+    },
+    logRetention: RetentionDays.TWO_WEEKS,
+    timeout: Duration.minutes(5),
+    memorySize: 128,
+  })
