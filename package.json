@@ -14,8 +14,8 @@
   "scripts": {
     "build": "tsc -b",
     "lint": "eslint --ext mjs --ext ts .",
-    "test:cdk": "cd cdk && npm run test",
-    "test:svg": "cd svg && npm run test"
+    "test:cdk": "npm --workspace=cdk run test",
+    "test:svg": "npm --workspace=svg run test"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^4.19.0",
