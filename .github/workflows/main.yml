@@ -2,7 +2,7 @@ name: CI
 on: [push]
 jobs:
   build:
-    name: Build, lint, and test on Node 15.x and ubuntu-latest
+    name: Build, lint, and test on Node 16.x and ubuntu-latest
 
     runs-on: ubuntu-latest
 
@@ -10,10 +10,10 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v2
 
-      - name: Use Node 15.x
+      - name: Use Node 16.x
         uses: actions/setup-node@v1
         with:
-          node-version: 15.x
+          node-version: 16.x
 
       - name: Install deps and build (with cache)
         uses: bahmutov/npm-install@v1
@@ -22,7 +22,7 @@ jobs:
         run: npm run lint
 
       - name: Test CDK
-        run: npm run test:cdk --ci --coverage --maxWorkers=2
+        run: npm --workspace=cdk run test --ci --coverage --maxWorkers=2
 
       - name: Test SVG
-        run: npm run test:svg --ci --coverage --maxWorkers=2
+        run: npm --workspace=svg run test --ci --coverage --maxWorkers=2
