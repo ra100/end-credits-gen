@@ -90,6 +90,6 @@ export const getCompressLambda = (scope: Construct, bucket: Bucket): NodejsFunct
       BUCKET: bucket.bucketName,
     },
     logRetention: RetentionDays.TWO_WEEKS,
-    timeout: Duration.minutes(10),
-    memorySize: 128,
+    timeout: Duration.minutes(15),
+    memorySize: 256,
   })

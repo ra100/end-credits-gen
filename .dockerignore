@@ -1,7 +1,10 @@
 **/node_modules
 tmp
 cdk
+result
+cli
 .github
 .ddcache
 **/dist
 !png/dist
+!svg

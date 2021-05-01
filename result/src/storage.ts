@@ -96,7 +96,7 @@ const invokeCompression = async (jobId: string) => {
   await client.invoke({
     FunctionName: lambdaArn,
     InvocationType: InvocationType.Event,
-    Payload: new TextEncoder().encode(jobId),
+    Payload: new TextEncoder().encode(JSON.stringify({jobId})),
   })
 }
 
@@ -125,5 +125,8 @@ export const checkCompleted = async (bucketName: string, jobId: string): Promise
     return newMeta
   }
 
-  return meta
+  return {
+    ...meta,
+    currentFrames: renderedFrames,
+  }
 }

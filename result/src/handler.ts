@@ -26,7 +26,7 @@ export const getStatus = async (event: APIGatewayProxyEvent): Promise<APIGateway
 
       return {
         statusCode: 302,
-        headers: {Location: url},
+        headers: {Location: url, 'Content-Type': 'application/x-tar'},
         body: '',
       }
     }
