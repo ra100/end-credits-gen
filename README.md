@@ -1,6 +1,6 @@
 # End Credits Generator
 
-## How to use
+## How to use CLI
 
 1. Install
 
@@ -31,6 +31,47 @@ npm --workspace=cli start ./input.yaml ./export/folder/
 ```
 
 This will produce folder with files `./export/folder/credits_<frame number>.png`
+
+## Deploy to AWS
+
+1. Install
+
+```sh
+git clone https://github.com/ra100/end-credits-gen.git
+npm install
+```
+
+2. Get AWS credentials and save in `~/.aws/credentials` (or any other way to allow CDK to deploy)
+
+```ini
+[default]
+aws_access_key_id = YOUR_ID
+aws_secret_access_key = YOUR_SECRET_KEY
+```
+
+3. Run CDK
+
+```bash
+npm --workspace=cdk run cdk bootstrap
+npm --workspace=cdk run cdk deploy
+```
+
+This will output link to API Gateway, save it. So you can call it later.
+
+## How to use deployed API:
+
+1. POST credits in JSON format to: `<your_url>/credits`
+   you'll get response in format:
+
+```json
+{
+  "message": "Render queued",
+  "id": "C4E50HTlpLKOl0fnfjoA7"
+}
+```
+
+2. Get status of the render, call GET to `<your_url>/credits/{id}`
+   You'll get status or redirect to download zip with rendered credits.
 
 ## Example
 
