@@ -73,6 +73,10 @@ This will output link to API Gateway, save it. So you can call it later.
 2. Get status of the render, call GET to `<your_url>/credits/{id}`
    You'll get status or redirect to download zip with rendered credits.
 
+## Custom Fonts
+
+To be able to use custom fonts, you need to add them to `png/fonts` directory.
+
 ## Example
 
 Get this:

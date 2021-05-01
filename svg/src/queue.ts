@@ -103,13 +103,13 @@ export const queueRender = async ({
     entries.add(createMesageBody(id, content, frameCount)(frame))
 
     if (entries.size >= 9) {
-      addToQueue([...entries])
+      await addToQueue([...entries])
       entries.clear()
     }
   }
 
   if (entries.size > 0) {
-    addToQueue([...entries])
+    await addToQueue([...entries])
     entries.clear()
   }
 

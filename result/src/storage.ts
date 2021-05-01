@@ -88,7 +88,7 @@ export const getFrameKeys = async (bucketName: string, jobId: string): Promise<s
   return keys
 }
 
-const compress = async (jobId: string) => {
+const invokeCompression = async (jobId: string) => {
   const lambdaArn = process.env.COMPRESS_LAMBDA_ARN
 
   const client = new Lambda({})
@@ -111,7 +111,7 @@ export const checkCompleted = async (bucketName: string, jobId: string): Promise
   }
 
   if (renderedFrames === meta.targetFrames) {
-    await compress(jobId)
+    await invokeCompression(jobId)
 
     const newMeta: Meta = {
       targetFrames: meta.targetFrames,

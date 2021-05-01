@@ -15,8 +15,8 @@ export class CreditsService extends Construct {
     const queueRenderLambda = getQueueRenderLambda(this, renderQueue, bucket)
     const jsonToSvgLambda = getJsonToSvgLambda(this, queueRenderLambda)
     const renderLambda = getRenderLambda(this, bucket)
-    const statusLambda = getStatusLambda(this, bucket)
     const compressLambda = getCompressLambda(this, bucket)
+    const statusLambda = getStatusLambda(this, bucket, compressLambda)
 
     bucket.grantReadWrite(renderLambda)
     bucket.grantReadWrite(queueRenderLambda)
@@ -25,7 +25,7 @@ export class CreditsService extends Construct {
     renderQueue.grantSendMessages(queueRenderLambda)
     renderQueue.grantConsumeMessages(renderLambda)
     queueRenderLambda.grantInvoke(jsonToSvgLambda)
-    statusLambda.grantInvoke(compressLambda)
+    compressLambda.grantInvoke(statusLambda)
 
     renderLambda.addEventSource(new SqsEventSource(renderQueue, {batchSize: 5}))
 

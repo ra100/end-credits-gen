@@ -67,13 +67,14 @@ export const getRenderLambda = (scope: Construct, bucket: Bucket): DockerImageFu
   })
 }
 
-export const getStatusLambda = (scope: Construct, bucket: Bucket): NodejsFunction =>
+export const getStatusLambda = (scope: Construct, bucket: Bucket, lambda: NodejsFunction): NodejsFunction =>
   new NodejsFunction(scope, 'CreditsStatusHandler', {
     entry: path.resolve(__dirname, '../../', 'result/src/handler.ts'),
     handler: 'getStatus',
     runtime: Runtime.NODEJS_14_X,
     environment: {
       BUCKET: bucket.bucketName,
+      COMPRESS_LAMBDA_ARN: lambda.functionArn,
     },
     logRetention: RetentionDays.TWO_WEEKS,
     timeout: Duration.minutes(5),
@@ -82,7 +83,7 @@ export const getStatusLambda = (scope: Construct, bucket: Bucket): NodejsFunctio
 
 export const getCompressLambda = (scope: Construct, bucket: Bucket): NodejsFunction =>
   new NodejsFunction(scope, 'CompressHandler', {
-    entry: path.resolve(__dirname, '../../', 'result/src/handler.ts'),
+    entry: path.resolve(__dirname, '../../', 'result/src/compressHandler.ts'),
     handler: 'compressHandler',
     runtime: Runtime.NODEJS_14_X,
     environment: {

@@ -1,8 +1,7 @@
 import {stderr} from 'process'
-import type {APIGatewayProxyEvent, APIGatewayProxyResult, Handler} from 'aws-lambda'
+import type {APIGatewayProxyEvent, APIGatewayProxyResult} from 'aws-lambda'
 
 import {checkCompleted, getFileUrl} from './storage'
-import {compress} from './compress'
 
 const headers = {'Content-Type': 'application/json'}
 
@@ -51,27 +50,6 @@ export const getStatus = async (event: APIGatewayProxyEvent): Promise<APIGateway
       statusCode: 500,
       headers,
       body: JSON.stringify({error}),
-    }
-  }
-}
-
-export const compressHandler: Handler<{jobId: string}, {statusCode: number; message?: string}> = async ({jobId}) => {
-  try {
-    const bucketName = process.env.BUCKET
-
-    if (!bucketName) {
-      throw new Error('Missing BUCKET_NAME environment variable')
-    }
-
-    await compress(bucketName, jobId)
-
-    return {
-      statusCode: 200,
-    }
-  } catch (error) {
-    return {
-      statusCode: 500,
-      message: JSON.stringify({error}),
     }
   }
 }
