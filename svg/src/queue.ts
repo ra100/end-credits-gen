@@ -12,7 +12,7 @@ export type Meta = {
   targetFrames: number
   currentFrames: number
   status: 'started' | 'compressing' | 'finished'
-  downloadUrl?: string
+  zipKey?: string
 }
 
 const cropDimensions = (

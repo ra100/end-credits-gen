@@ -1,7 +1,7 @@
 import {stderr} from 'process'
 import type {APIGatewayProxyEvent, APIGatewayProxyResult, Handler} from 'aws-lambda'
 
-import {checkCompleted} from './storage'
+import {checkCompleted, getFileUrl} from './storage'
 import {compress} from './compress'
 
 const headers = {'Content-Type': 'application/json'}
@@ -21,6 +21,16 @@ export const getStatus = async (event: APIGatewayProxyEvent): Promise<APIGateway
     }
 
     const meta = await checkCompleted(bucketName, jobId)
+
+    if (meta.status === 'finished' && meta.zipKey) {
+      const url = await getFileUrl(bucketName, meta.zipKey)
+
+      return {
+        statusCode: 302,
+        headers: {Location: url},
+        body: '',
+      }
+    }
 
     return {
       statusCode: 200,

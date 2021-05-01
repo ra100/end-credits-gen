@@ -50,6 +50,7 @@ export const compress = async (bucketName: string, jobId: string): Promise<void>
 
   const newMeta: Meta = {
     ...meta,
+    zipKey: `${jobId}/credits.zip`,
     status: 'finished',
   }
   const content = Buffer.from(JSON.stringify(newMeta), 'utf8')

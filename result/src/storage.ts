@@ -4,8 +4,15 @@ import {TextEncoder} from 'util'
 import {GetObjectCommand, ListObjectsCommand, ListObjectsOutput, S3Client} from '@aws-sdk/client-s3'
 import {Upload} from '@aws-sdk/lib-storage'
 import {InvocationType, Lambda} from '@aws-sdk/client-lambda'
+import {getSignedUrl} from '@aws-sdk/s3-request-presigner'
 
 import type {Meta} from '@ra100-ecg/svg'
+
+export const getFileUrl = (bucketName: string, key: string): Promise<string> => {
+  const client = new S3Client({})
+  const command = new GetObjectCommand({Bucket: bucketName, Key: key})
+  return getSignedUrl(client, command, {expiresIn: 3600})
+}
 
 export const upload = async (bucketName: string, file: Buffer, path: string): Promise<void> => {
   stdout.write(`Uploading file ${path}\n`)
