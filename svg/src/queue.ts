@@ -11,7 +11,7 @@ export type RenderOptions = {area: number[]; width: number; height: number; fram
 export type Meta = {
   targetFrames: number
   currentFrames: number
-  status: 'started' | 'finished'
+  status: 'started' | 'compressing' | 'finished'
   downloadUrl?: string
 }
 

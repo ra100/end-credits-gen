@@ -79,3 +79,16 @@ export const getStatusLambda = (scope: Construct, bucket: Bucket): NodejsFunctio
     timeout: Duration.minutes(5),
     memorySize: 128,
   })
+
+export const getCompressLambda = (scope: Construct, bucket: Bucket): NodejsFunction =>
+  new NodejsFunction(scope, 'CompressHandler', {
+    entry: path.resolve(__dirname, '../../', 'result/src/handler.ts'),
+    handler: 'compressHandler',
+    runtime: Runtime.NODEJS_14_X,
+    environment: {
+      BUCKET: bucket.bucketName,
+    },
+    logRetention: RetentionDays.TWO_WEEKS,
+    timeout: Duration.minutes(10),
+    memorySize: 128,
+  })

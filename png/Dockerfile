@@ -1,6 +1,6 @@
 # Define global args
 ARG FUNCTION_DIR="/home/app"
-ARG RUNTIME_VERSION="15"
+ARG RUNTIME_VERSION="16"
 ARG DISTRO_VERSION="3.13"
 ARG NPM_CONFIG_PREFIX="/home/node/.npm-global"
 

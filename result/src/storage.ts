@@ -1,7 +1,9 @@
 import {stdout} from 'process'
+import {TextEncoder} from 'util'
 
 import {GetObjectCommand, ListObjectsCommand, ListObjectsOutput, S3Client} from '@aws-sdk/client-s3'
 import {Upload} from '@aws-sdk/lib-storage'
+import {InvocationType, Lambda} from '@aws-sdk/client-lambda'
 
 import type {Meta} from '@ra100-ecg/svg'
 
@@ -31,7 +33,7 @@ const getObject = async (bucketName: string, key: string): Promise<Buffer> => {
   })
 }
 
-const getMeta = async (bucketName: string, jobId: string): Promise<Meta> => {
+export const getMeta = async (bucketName: string, jobId: string): Promise<Meta> => {
   const metaBuffer = await getObject(bucketName, `${jobId}/meta.json`)
   return JSON.parse(metaBuffer.toString('utf8'))
 }
@@ -57,21 +59,57 @@ const getNumberOfRenderedFrames = async (bucketName: string, jobId: string): Pro
   return count
 }
 
+export const getFrameKeys = async (bucketName: string, jobId: string): Promise<string[]> => {
+  const client = new S3Client({})
+  const keys: string[] = []
+  let isTrucated = true
+  let marker: ListObjectsOutput['NextMarker']
+  while (isTrucated) {
+    const {NextMarker, IsTruncated, Contents} = await client.send(
+      new ListObjectsCommand({
+        Bucket: bucketName,
+        Prefix: `${jobId}/credits_`,
+        Marker: marker,
+      })
+    )
+    isTrucated = IsTruncated ?? false
+    marker = NextMarker ?? Contents?.pop()?.Key
+    const currentKeys = (Contents || []).map(({Key}) => Key || '').filter((k) => !!k)
+    keys.push(...currentKeys)
+  }
+
+  return keys
+}
+
+const compress = async (jobId: string) => {
+  const lambdaArn = process.env.COMPRESS_LAMBDA_ARN
+
+  const client = new Lambda({})
+
+  await client.invoke({
+    FunctionName: lambdaArn,
+    InvocationType: InvocationType.Event,
+    Payload: new TextEncoder().encode(jobId),
+  })
+}
+
 export const checkCompleted = async (bucketName: string, jobId: string): Promise<Meta> => {
   const meta = await getMeta(bucketName, jobId)
   const renderedFrames = await getNumberOfRenderedFrames(bucketName, jobId)
 
   stdout.write(`Frames rendered ${renderedFrames}/${meta.targetFrames}`)
 
-  if (meta.status === 'finished') {
+  if (meta.status === 'compressing' || meta.status === 'finished') {
     return meta
   }
 
   if (renderedFrames === meta.targetFrames) {
+    await compress(jobId)
+
     const newMeta: Meta = {
       targetFrames: meta.targetFrames,
       currentFrames: renderedFrames,
-      status: 'finished',
+      status: 'compressing',
     }
     const content = Buffer.from(JSON.stringify(newMeta), 'utf8')
 
