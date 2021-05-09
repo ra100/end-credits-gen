@@ -80,7 +80,7 @@ export const getFrameKeys = async (bucketName: string, jobId: string): Promise<s
       })
     )
     isTrucated = IsTruncated ?? false
-    marker = NextMarker ?? Contents?.pop()?.Key
+    marker = NextMarker ?? (Contents && Contents[Contents?.length - 1]?.Key)
     const currentKeys = (Contents || []).map(({Key}) => Key || '').filter((k) => !!k)
     keys.push(...currentKeys)
   }
