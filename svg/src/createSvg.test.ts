@@ -33,6 +33,7 @@ describe('createSvg', () => {
         xmlns:cc=\\"http://creativecommons.org/ns#\\"
         xmlns:rdf=\\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\\"
         xmlns:svg=\\"http://www.w3.org/2000/svg\\"
+        xmlns:xlink=\\"http://www.w3.org/1999/xlink\\"
         xmlns=\\"http://www.w3.org/2000/svg\\" version=\\"1.1\\"
         viewBox=\\"0 0 3860 4836\\"
         >
