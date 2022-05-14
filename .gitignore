@@ -12,3 +12,4 @@ dist
 cdk.out
 
 *.tsbuildinfo
+.wireit

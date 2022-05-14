@@ -11,10 +11,37 @@
     "src"
   ],
   "scripts": {
-    "build": "tsc -b",
-    "start": "ts-node src/cli.ts",
-    "test": "jest",
-    "clean": "rm -rf ./dist/*"
+    "build": "wireit",
+    "start": "wireit",
+    "test": "wireit"
+  },
+  "wireit": {
+    "build": {
+      "command": "tsc -b",
+      "files": [
+        "src/**/*.ts",
+        "tsconfig.json"
+      ],
+      "output": [
+        "./dist"
+      ],
+      "clean": "if-file-deleted",
+      "depencencies": [
+        "../svg:build"
+      ]
+    },
+    "start": {
+      "command": "node dist/index.js",
+      "dependencies": [
+        "build"
+      ]
+    },
+    "test": {
+      "command": "jest",
+      "files": [
+        "src/**/*.ts"
+      ]
+    }
   },
   "author": "ra100",
   "license": "GNU LGPLv3",

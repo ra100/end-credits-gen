@@ -13,10 +13,32 @@
     "src"
   ],
   "scripts": {
-    "build": "tsc -b",
-    "lint": "eslint --ext mjs --ext ts .",
-    "test:cdk": "npm --workspace=cdk run test",
-    "test:svg": "npm --workspace=svg run test"
+    "build": "wireit",
+    "lint": "wireit",
+    "test": "wireit",
+    "test:cdk": "wireit",
+    "test:svg": "wireit"
+  },
+  "wireit": {
+    "build": {
+      "command": "tsc -b"
+    },
+    "lint": {
+      "command": "eslint --ext mjs --ext ts ."
+    },
+    "test": {
+      "command": "echo 'tests done'",
+      "dependencies": [
+        "test:cdk",
+        "test:svg"
+      ]
+    },
+    "test:cdk": {
+      "command": "npm --workspace=cdk run test"
+    },
+    "test:svg": {
+      "command": "npm --workspace=svg run test"
+    }
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^5.23.0",
@@ -26,6 +48,7 @@
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-unicorn": "^42.0.0",
     "prettier": "^2.6.2",
-    "typescript": "^4.6.4"
+    "typescript": "^4.6.4",
+    "wireit": "^0.4.2"
   }
 }
