@@ -1,5 +1,6 @@
-import {Bucket, BucketEncryption} from '@aws-cdk/aws-s3'
-import {Construct, Duration} from '@aws-cdk/core'
+import {Construct} from 'constructs'
+import {Bucket, BucketEncryption} from 'aws-cdk-lib/aws-s3'
+import {Duration} from 'aws-cdk-lib'
 
 export const getBucket = (scope: Construct): Bucket => {
   const bucket = new Bucket(scope, 'CreditsStore', {

@@ -1,5 +1,5 @@
-import {stdout} from 'process'
-import {TextEncoder} from 'util'
+import {stdout} from 'node:process'
+import {TextEncoder} from 'node:util'
 
 import {GetObjectCommand, ListObjectsCommand, ListObjectsOutput, S3Client} from '@aws-sdk/client-s3'
 import {Upload} from '@aws-sdk/lib-storage'

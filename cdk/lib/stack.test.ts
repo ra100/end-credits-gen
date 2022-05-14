@@ -1,10 +1,9 @@
-/* eslint-disable radar/no-duplicate-string */
 import {expect as expectCDK, matchTemplate, MatchStyle} from '@aws-cdk/assert'
-import * as cdk from '@aws-cdk/core'
+import {App} from 'aws-cdk-lib'
 import * as Stack from './stack'
 
 test('Stack', () => {
-  const app = new cdk.App()
+  const app = new App()
   // WHEN
   const stack = new Stack.EcgStack(app, 'MyTestStack')
   // THEN
@@ -142,8 +141,7 @@ test('Stack', () => {
             Properties: {
               Code: {
                 S3Bucket: {
-                  Ref:
-                    'AssetParametersf608ae696d7d0e7abdcd6b0b144f8b3444e434d20a08e3e460d2ace3af46ef57S3Bucket30908983',
+                  Ref: 'AssetParametersf608ae696d7d0e7abdcd6b0b144f8b3444e434d20a08e3e460d2ace3af46ef57S3Bucket30908983',
                 },
                 S3Key: {
                   'Fn::Join': [
@@ -156,8 +154,7 @@ test('Stack', () => {
                             'Fn::Split': [
                               '||',
                               {
-                                Ref:
-                                  'AssetParametersf608ae696d7d0e7abdcd6b0b144f8b3444e434d20a08e3e460d2ace3af46ef57S3VersionKey0C95FDFA',
+                                Ref: 'AssetParametersf608ae696d7d0e7abdcd6b0b144f8b3444e434d20a08e3e460d2ace3af46ef57S3VersionKey0C95FDFA',
                               },
                             ],
                           },
@@ -170,8 +167,7 @@ test('Stack', () => {
                             'Fn::Split': [
                               '||',
                               {
-                                Ref:
-                                  'AssetParametersf608ae696d7d0e7abdcd6b0b144f8b3444e434d20a08e3e460d2ace3af46ef57S3VersionKey0C95FDFA',
+                                Ref: 'AssetParametersf608ae696d7d0e7abdcd6b0b144f8b3444e434d20a08e3e460d2ace3af46ef57S3VersionKey0C95FDFA',
                               },
                             ],
                           },
@@ -284,8 +280,7 @@ test('Stack', () => {
             Properties: {
               Code: {
                 S3Bucket: {
-                  Ref:
-                    'AssetParameters4986e65e4068c14ad56ff1fc6e3bbea82aa7ebeb32a8144668398e9e5d8e81d0S3Bucket694E06B3',
+                  Ref: 'AssetParameters4986e65e4068c14ad56ff1fc6e3bbea82aa7ebeb32a8144668398e9e5d8e81d0S3Bucket694E06B3',
                 },
                 S3Key: {
                   'Fn::Join': [
@@ -298,8 +293,7 @@ test('Stack', () => {
                             'Fn::Split': [
                               '||',
                               {
-                                Ref:
-                                  'AssetParameters4986e65e4068c14ad56ff1fc6e3bbea82aa7ebeb32a8144668398e9e5d8e81d0S3VersionKeyCECCAEF5',
+                                Ref: 'AssetParameters4986e65e4068c14ad56ff1fc6e3bbea82aa7ebeb32a8144668398e9e5d8e81d0S3VersionKeyCECCAEF5',
                               },
                             ],
                           },
@@ -312,8 +306,7 @@ test('Stack', () => {
                             'Fn::Split': [
                               '||',
                               {
-                                Ref:
-                                  'AssetParameters4986e65e4068c14ad56ff1fc6e3bbea82aa7ebeb32a8144668398e9e5d8e81d0S3VersionKeyCECCAEF5',
+                                Ref: 'AssetParameters4986e65e4068c14ad56ff1fc6e3bbea82aa7ebeb32a8144668398e9e5d8e81d0S3VersionKeyCECCAEF5',
                               },
                             ],
                           },
@@ -759,8 +752,7 @@ test('Stack', () => {
               Runtime: 'nodejs12.x',
               Code: {
                 S3Bucket: {
-                  Ref:
-                    'AssetParameters67b7823b74bc135986aa72f889d6a8da058d0c4a20cbc2dfc6f78995fdd2fc24S3Bucket4D46ABB5',
+                  Ref: 'AssetParameters67b7823b74bc135986aa72f889d6a8da058d0c4a20cbc2dfc6f78995fdd2fc24S3Bucket4D46ABB5',
                 },
                 S3Key: {
                   'Fn::Join': [
@@ -773,8 +765,7 @@ test('Stack', () => {
                             'Fn::Split': [
                               '||',
                               {
-                                Ref:
-                                  'AssetParameters67b7823b74bc135986aa72f889d6a8da058d0c4a20cbc2dfc6f78995fdd2fc24S3VersionKeyB0F28861',
+                                Ref: 'AssetParameters67b7823b74bc135986aa72f889d6a8da058d0c4a20cbc2dfc6f78995fdd2fc24S3VersionKeyB0F28861',
                               },
                             ],
                           },
@@ -787,8 +778,7 @@ test('Stack', () => {
                             'Fn::Split': [
                               '||',
                               {
-                                Ref:
-                                  'AssetParameters67b7823b74bc135986aa72f889d6a8da058d0c4a20cbc2dfc6f78995fdd2fc24S3VersionKeyB0F28861',
+                                Ref: 'AssetParameters67b7823b74bc135986aa72f889d6a8da058d0c4a20cbc2dfc6f78995fdd2fc24S3VersionKeyB0F28861',
                               },
                             ],
                           },

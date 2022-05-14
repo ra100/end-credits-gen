@@ -1,4 +1,4 @@
-import {stderr} from 'process'
+import {stderr} from 'node:process'
 import type {APIGatewayProxyEvent, APIGatewayProxyResult} from 'aws-lambda'
 
 import {checkCompleted, getFileUrl} from './storage'
@@ -39,7 +39,7 @@ export const getStatus = async (event: APIGatewayProxyEvent): Promise<APIGateway
   } catch (error) {
     stderr.write(`ERROR ${error}\n`)
 
-    if (error.message === 'NoSuchKey') {
+    if ((error as Error).message === 'NoSuchKey') {
       return {
         statusCode: 404,
         headers,

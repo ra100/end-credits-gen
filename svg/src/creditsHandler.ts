@@ -1,7 +1,8 @@
+import {TextEncoder} from 'node:util'
+
 import {InvocationType, Lambda} from '@aws-sdk/client-lambda'
 import type {APIGatewayProxyEvent, APIGatewayProxyResult} from 'aws-lambda'
 import {nanoid} from 'nanoid'
-import {TextEncoder} from 'util'
 
 export const postCredits = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   try {

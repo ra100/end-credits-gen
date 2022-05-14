@@ -1,5 +1,5 @@
-import {stderr, stdout} from 'process'
-import {Stream} from 'stream'
+import {stderr, stdout} from 'node:process'
+import {Stream} from 'node:stream'
 
 import archiver from 'archiver'
 import {S3} from 'aws-sdk'

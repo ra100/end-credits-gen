@@ -1,4 +1,4 @@
-import {stderr, stdout} from 'process'
+import {stderr, stdout} from 'node:process'
 import type {SQSHandler, SQSMessageAttributes} from 'aws-lambda'
 
 import type {RenderOptions} from '@ra100-ecg/svg/src/queue'

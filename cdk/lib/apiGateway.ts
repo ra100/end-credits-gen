@@ -1,6 +1,6 @@
-import {LambdaIntegration, RestApi} from '@aws-cdk/aws-apigateway'
-import {NodejsFunction} from '@aws-cdk/aws-lambda-nodejs'
-import {Construct} from '@aws-cdk/core'
+import {LambdaIntegration, RestApi} from 'aws-cdk-lib/aws-apigateway'
+import {NodejsFunction} from 'aws-cdk-lib/aws-lambda-nodejs'
+import {Construct} from 'constructs'
 
 export const getApiGateway = (scope: Construct, startLambda: NodejsFunction, statusLambda: NodejsFunction): RestApi => {
   const api = new RestApi(scope, 'credits-api', {

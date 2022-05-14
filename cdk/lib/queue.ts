@@ -1,5 +1,6 @@
-import {Queue} from '@aws-cdk/aws-sqs'
-import {Construct, Duration} from '@aws-cdk/core'
+import {Queue} from 'aws-cdk-lib/aws-sqs'
+import {Duration} from 'aws-cdk-lib'
+import {Construct} from 'constructs'
 
 export const getRenderQueue = (scope: Construct): Queue =>
   new Queue(scope, 'CreditsSvgToPngQueue', {

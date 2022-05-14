@@ -1,6 +1,6 @@
-import {stderr, stdout} from 'process'
-import assert from 'assert'
-import fs from 'fs'
+import {stderr, stdout} from 'node:process'
+import assert from 'node:assert'
+import fs from 'node:fs'
 import {load} from 'js-yaml'
 
 import {Config} from '@ra100-ecg/svg'

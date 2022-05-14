@@ -1,4 +1,4 @@
-import {stderr} from 'process'
+import {stderr} from 'node:process'
 import type {Handler} from 'aws-lambda'
 
 import {compress} from './compress'

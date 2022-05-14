@@ -1,4 +1,4 @@
-import {stderr} from 'process'
+import {stderr} from 'node:process'
 
 import {Handler} from 'aws-lambda'
 import {Config, createSvg} from './createSvg'

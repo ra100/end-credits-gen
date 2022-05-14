@@ -1,4 +1,4 @@
-import {stdout} from 'process'
+import {stdout} from 'node:process'
 
 import {nanoid} from 'nanoid'
 import {SendMessageBatchRequestEntry, SQS} from '@aws-sdk/client-sqs'
@@ -43,17 +43,17 @@ const createFrameBatch = (config: Config, creditsHeight: number): RenderOptions[
   return batch
 }
 
-const createMesageBody = (jobId: string, svg: string, length: number) => (
-  batchData: RenderOptions
-): SendMessageBatchRequestEntry => ({
-  MessageBody: JSON.stringify(batchData),
-  MessageAttributes: {
-    jobId: {DataType: 'String', StringValue: jobId},
-    svg: {DataType: 'String', StringValue: svg},
-    length: {DataType: 'Number', StringValue: `${length}`},
-  },
-  Id: jobId + nanoid(),
-})
+const createMesageBody =
+  (jobId: string, svg: string, length: number) =>
+  (batchData: RenderOptions): SendMessageBatchRequestEntry => ({
+    MessageBody: JSON.stringify(batchData),
+    MessageAttributes: {
+      jobId: {DataType: 'String', StringValue: jobId},
+      svg: {DataType: 'String', StringValue: svg},
+      length: {DataType: 'Number', StringValue: `${length}`},
+    },
+    Id: jobId + nanoid(),
+  })
 
 const sender = (queue: SQS, queueUrl: string) => async (entries: SendMessageBatchRequestEntry[]) => {
   stdout.write('Sending to Queue\n')

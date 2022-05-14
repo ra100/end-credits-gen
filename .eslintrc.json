@@ -9,12 +9,11 @@
     "ecmaVersion": 2021,
     "sourceType": "module"
   },
-  "plugins": ["@typescript-eslint", "radar", "unicorn", "prettier"],
+  "plugins": ["@typescript-eslint", "unicorn", "prettier"],
   "extends": [
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended",
     "plugin:prettier/recommended",
-    "plugin:radar/recommended",
     "plugin:unicorn/recommended"
   ],
   "rules": {
@@ -22,6 +21,7 @@
       "error",
       {"args": "after-used", "argsIgnorePattern": "^_", "varsIgnorePattern": "^_", "ignoreRestSiblings": true}
     ],
-    "unicorn/filename-case": ["error", {"case": "camelCase"}]
+    "unicorn/filename-case": ["error", {"case": "camelCase"}],
+    "unicorn/prefer-module": "off"
   }
 }

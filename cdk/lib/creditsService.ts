@@ -1,5 +1,5 @@
-import {Construct} from '@aws-cdk/core'
-import {SqsEventSource} from '@aws-cdk/aws-lambda-event-sources'
+import {Construct} from 'constructs'
+import {SqsEventSource} from 'aws-cdk-lib/aws-lambda-event-sources'
 
 import {getCompressLambda, getJsonToSvgLambda, getQueueRenderLambda, getRenderLambda, getStatusLambda} from './lambdas'
 import {getApiGateway} from './apiGateway'

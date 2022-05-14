@@ -1,14 +1,14 @@
-import assert from 'assert'
-import {exec} from 'child_process'
-import fs from 'fs'
-import os from 'os'
-import path from 'path'
-import {promisify} from 'util'
+import assert from 'node:assert'
+import {exec} from 'node:child_process'
+import fs from 'node:fs'
+import os from 'node:os'
+import path from 'node:path'
+import {promisify} from 'node:util'
 
 import {Config} from '@ra100-ecg/svg/src/createSvg'
 
 import {createSvgFile} from './saveSvgFile'
-import {stdout} from 'process'
+import {stdout} from 'node:process'
 
 const execPromise = promisify(exec)
 

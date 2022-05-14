@@ -1,20 +1,21 @@
-import path from 'path'
-import {execSync} from 'child_process'
-import {stdout} from 'process'
+import path from 'node:path'
+import {execSync} from 'node:child_process'
+import {stdout} from 'node:process'
 
-import {DockerImageCode, DockerImageFunction, Runtime} from '@aws-cdk/aws-lambda'
-import {NodejsFunction} from '@aws-cdk/aws-lambda-nodejs'
-import {RetentionDays} from '@aws-cdk/aws-logs'
-import {Construct, Duration} from '@aws-cdk/core'
-import {Queue} from '@aws-cdk/aws-sqs'
-import {Bucket} from '@aws-cdk/aws-s3'
-import {DockerImageAsset} from '@aws-cdk/aws-ecr-assets'
+import {Construct} from 'constructs'
+import {DockerImageCode, DockerImageFunction, Runtime} from 'aws-cdk-lib/aws-lambda'
+import {NodejsFunction} from 'aws-cdk-lib/aws-lambda-nodejs'
+import {RetentionDays} from 'aws-cdk-lib/aws-logs'
+import {Duration} from 'aws-cdk-lib'
+import {Queue} from 'aws-cdk-lib/aws-sqs'
+import {Bucket} from 'aws-cdk-lib/aws-s3'
+import {DockerImageAsset} from 'aws-cdk-lib/aws-ecr-assets'
 
 export const getQueueRenderLambda = (scope: Construct, queue: Queue, bucket: Bucket): NodejsFunction =>
   new NodejsFunction(scope, 'CreditsQueueHandler', {
     entry: path.resolve(__dirname, '../../', 'svg/src/queueHandler.ts'),
     handler: 'createQueue',
-    runtime: Runtime.NODEJS_14_X,
+    runtime: Runtime.NODEJS_16_X,
     environment: {
       QUEUE_NAME: queue.queueName,
       QUEUE_URL: queue.queueUrl,
@@ -29,7 +30,7 @@ export const getJsonToSvgLambda = (scope: Construct, lambda: NodejsFunction): No
   new NodejsFunction(scope, 'CreditsHandler', {
     entry: path.resolve(__dirname, '../../', 'svg/src/creditsHandler.ts'),
     handler: 'postCredits',
-    runtime: Runtime.NODEJS_14_X,
+    runtime: Runtime.NODEJS_16_X,
     bundling: {
       externalModules: ['aws-sdk'],
       sourceMap: true, // include source map, defaults to false
@@ -71,7 +72,7 @@ export const getStatusLambda = (scope: Construct, bucket: Bucket, lambda: Nodejs
   new NodejsFunction(scope, 'CreditsStatusHandler', {
     entry: path.resolve(__dirname, '../../', 'result/src/handler.ts'),
     handler: 'getStatus',
-    runtime: Runtime.NODEJS_14_X,
+    runtime: Runtime.NODEJS_16_X,
     environment: {
       BUCKET: bucket.bucketName,
       COMPRESS_LAMBDA_ARN: lambda.functionArn,
@@ -85,7 +86,7 @@ export const getCompressLambda = (scope: Construct, bucket: Bucket): NodejsFunct
   new NodejsFunction(scope, 'CompressHandler', {
     entry: path.resolve(__dirname, '../../', 'result/src/compressHandler.ts'),
     handler: 'compressHandler',
-    runtime: Runtime.NODEJS_14_X,
+    runtime: Runtime.NODEJS_16_X,
     environment: {
       BUCKET: bucket.bucketName,
     },
