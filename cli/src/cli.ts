@@ -1,4 +1,4 @@
-import {stderr, stdout} from 'node:process'
+import {stdout} from 'node:process'
 import assert from 'node:assert'
 import fs from 'node:fs'
 import {load} from 'js-yaml'
@@ -55,8 +55,7 @@ const main = () => {
   return render(config, output)
 }
 
-main()
-  .then(() => {
-    stdout.write('Done\n')
-  })
-  .catch(stderr.write)
+;async () => {
+  await main()
+  stdout.write('Done\n')
+}

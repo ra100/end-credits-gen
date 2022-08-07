@@ -6,6 +6,10 @@
   "main": "dist/cli.js",
   "module": "dist/cli.js",
   "typings": "dist/cli.d.ts",
+  "eports": [
+    "dist/*.js"
+  ],
+  "type": "commonjs",
   "files": [
     "dist",
     "src"
