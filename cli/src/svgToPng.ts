@@ -15,7 +15,7 @@ const execPromise = promisify(exec)
 const textToPath = async (input: string, output?: string) => {
   const outputFileName = output || path.join('.', `tmp-path-svg${Date.now()}.svg`)
 
-  await execPromise(`inkscape ${input} --export-text-to-path --export-filename=${outputFileName}`)
+  await execPromise(`inkscape ${input} --export-text-to-path --export-filename="${outputFileName}"`)
 
   return outputFileName
 }
@@ -27,7 +27,7 @@ const svgToPng = async (input: string, output: string) => {
 
   const outputFileName = output || path.join('.', `tmp-path-svg${Date.now()}.png`)
 
-  await execPromise(`inkscape ${input} --export-filename=${outputFileName}`)
+  await execPromise(`inkscape ${input} --export-filename="${outputFileName}"`)
 
   return outputFileName
 }
@@ -52,11 +52,11 @@ const cropFrameToFile = (
   const exportArea = [0, offset, width, offset + height].join(':').replace(/\./g, ',')
 
   const inscapeArgsuments = [
-    svgImagePath,
+    `"${svgImagePath}"`,
     `--export-area=${exportArea}`,
     `--export-width=${outputWidth || width}`,
     `--export-height=${outputHeight || height}`,
-    `--export-filename=${path.join(outputDir, `credits_${filenameNumber}.png`)}`,
+    `--export-filename="${path.join(outputDir, `credits_${filenameNumber}.png`)}"`,
   ].join(' ')
 
   stdout.write(`Rendering frame ${filenameNumber}\n`)
@@ -73,7 +73,7 @@ export const renderClip = async (config: Config, outputDirectory: string): Promi
 
   stdout.write(`Rendering ${frameCount} frames`)
   try {
-    await execPromise(`mkdir -p ${outputDirectory}`)
+    await execPromise(`mkdir -p "${outputDirectory}"`)
 
     for (let frameNumber = 0; frameNumber < frameCount; ) {
       const batch = []
