@@ -3,19 +3,19 @@ import {exec} from 'node:child_process'
 import fs from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
+import {stdout} from 'node:process'
 import {promisify} from 'node:util'
 
 import {Config} from '@ra100-ecg/svg/src/createSvg'
 
 import {createSvgFile} from './saveSvgFile'
-import {stdout} from 'node:process'
 
 const execPromise = promisify(exec)
 
 const textToPath = async (input: string, output?: string) => {
-  const outputFileName = output || path.join('.', `tmp-path-svg${Date.now()}.svg`)
+  const outputFileName = output || path.join(os.tmpdir(), 'ecg', `tmp-path-svg${Date.now()}.svg`)
 
-  await execPromise(`inkscape ${input} --export-text-to-path --export-filename="${outputFileName}"`)
+  await execPromise(`inkscape "${input}" --export-text-to-path --export-filename="${outputFileName}"`)
 
   return outputFileName
 }
@@ -25,9 +25,9 @@ const svgToPng = async (input: string, output: string) => {
     assert(output.slice(-4) === '.png', 'Output file must have ".png" extension')
   }
 
-  const outputFileName = output || path.join('.', `tmp-path-svg${Date.now()}.png`)
+  const outputFileName = output || path.join(os.tmpdir(), 'ecg', `tmp-path-svg${Date.now()}.png`)
 
-  await execPromise(`inkscape ${input} --export-filename="${outputFileName}"`)
+  await execPromise(`inkscape "${input}" --export-filename="${outputFileName}"`)
 
   return outputFileName
 }
