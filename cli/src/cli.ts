@@ -1,4 +1,4 @@
-import {stdout} from 'node:process'
+import {stderr, stdout} from 'node:process'
 import assert from 'node:assert'
 import fs from 'node:fs'
 import {load} from 'js-yaml'
@@ -55,7 +55,9 @@ const main = () => {
   return render(config, output)
 }
 
-;async () => {
-  await main()
-  stdout.write('Done\n')
-}
+main()
+  .then(() => {
+    stdout.write('Done\n')
+  })
+  // eslint-disable-next-line unicorn/prefer-top-level-await
+  .catch(stderr.write)
