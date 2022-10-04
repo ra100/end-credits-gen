@@ -47,7 +47,7 @@
   "dependencies": {
     "@aws-sdk/client-lambda": "^3.142.0",
     "@aws-sdk/client-s3": "^3.142.0",
-    "@aws-sdk/lib-storage": "^3.142.0",
+    "@aws-sdk/lib-storage": "^3.183.0",
     "@ra100-ecg/svg": "^1.0.0"
   },
   "devDependencies": {
