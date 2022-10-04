@@ -1,12 +1,12 @@
 # Define global args
 ARG FUNCTION_DIR="/home/app"
-ARG RUNTIME_VERSION="16"
-ARG DISTRO_VERSION="3.13"
+ARG RUNTIME_VERSION="16.17"
+ARG DISTRO_VERSION="bullseye-slim"
 ARG NPM_CONFIG_PREFIX="/home/node/.npm-global"
 
 # Stage 1 - bundle base image + runtime
 # Grab a fresh copy of the image and install GCC
-FROM node:${RUNTIME_VERSION}-alpine${DISTRO_VERSION} AS build-image
+FROM node:${RUNTIME_VERSION}-${DISTRO_VERSION} AS build-image
 
 # Include global arg in this stage of the build
 ARG FUNCTION_DIR
