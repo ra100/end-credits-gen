@@ -58,7 +58,7 @@ export const getRenderLambda = (scope: Construct, bucket: Bucket): DockerImageFu
 
   return new DockerImageFunction(scope, 'CreditsPngRenderHandler', {
     functionName: 'renderCredits',
-    code: DockerImageCode.fromEcr(asset.repository, {tag: asset.assetHash}),
+    code: DockerImageCode.fromEcr(asset.repository, {tagOrDigest: asset.assetHash}),
     environment: {
       BUCKET: bucket.bucketName,
     },
