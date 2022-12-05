@@ -51,7 +51,7 @@
     "@ra100-ecg/svg": "^1.0.0"
   },
   "devDependencies": {
-    "@aws-sdk/types": "^3.188.0",
+    "@aws-sdk/types": "^3.222.0",
     "@types/aws-lambda": "^8.10.108",
     "@types/jest": "^29.2.0",
     "@types/node": "^18.11.0",
