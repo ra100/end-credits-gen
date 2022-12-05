@@ -52,7 +52,7 @@
     "@aws-sdk/s3-request-presigner": "^3.199.0",
     "@ra100-ecg/svg": "^1.0.0",
     "archiver": "^5.3.1",
-    "aws-sdk": "^2.1248.0"
+    "aws-sdk": "^2.1267.0"
   },
   "devDependencies": {
     "@aws-sdk/types": "^3.188.0",
