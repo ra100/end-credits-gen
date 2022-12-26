@@ -2,7 +2,7 @@ name: CI
 on: [push]
 jobs:
   build:
-    name: Build, lint, and test on Node 16.x and ubuntu-latest
+    name: Build, lint, and test on Node 18.x and ubuntu-latest
 
     runs-on: ubuntu-latest
 
