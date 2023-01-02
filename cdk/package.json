@@ -18,7 +18,7 @@
     "@types/node": "^18.11.18",
     "aws-cdk": "^2.56.1",
     "aws-cdk-lib": "^2.56.1",
-    "constructs": "^10.1.200",
+    "constructs": "^10.1.207",
     "jest": "^29.3.1",
     "ts-jest": "^29.0.3",
     "ts-node": "^10.9.1",
