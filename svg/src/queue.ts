@@ -1,6 +1,5 @@
 import {stdout} from 'node:process'
 
-import {nanoid} from 'nanoid'
 import {SendMessageBatchRequestEntry, SQS} from '@aws-sdk/client-sqs'
 import {S3Client} from '@aws-sdk/client-s3'
 import {Upload} from '@aws-sdk/lib-storage'
@@ -45,15 +44,19 @@ const createFrameBatch = (config: Config, creditsHeight: number): RenderOptions[
 
 const createMesageBody =
   (jobId: string, svg: string, length: number) =>
-  (batchData: RenderOptions): SendMessageBatchRequestEntry => ({
-    MessageBody: JSON.stringify(batchData),
-    MessageAttributes: {
-      jobId: {DataType: 'String', StringValue: jobId},
-      svg: {DataType: 'String', StringValue: svg},
-      length: {DataType: 'Number', StringValue: `${length}`},
-    },
-    Id: jobId + nanoid(),
-  })
+  async (batchData: RenderOptions): Promise<SendMessageBatchRequestEntry> => {
+    const {nanoid} = await import('nanoid')
+
+    return {
+      MessageBody: JSON.stringify(batchData),
+      MessageAttributes: {
+        jobId: {DataType: 'String', StringValue: jobId},
+        svg: {DataType: 'String', StringValue: svg},
+        length: {DataType: 'Number', StringValue: `${length}`},
+      },
+      Id: jobId + nanoid(),
+    }
+  }
 
 const sender = (queue: SQS, queueUrl: string) => async (entries: SendMessageBatchRequestEntry[]) => {
   stdout.write('Sending to Queue\n')
@@ -100,7 +103,7 @@ export const queueRender = async ({
   const entries = new Set<SendMessageBatchRequestEntry>()
 
   for (const frame of batch) {
-    entries.add(createMesageBody(id, content, frameCount)(frame))
+    entries.add(await createMesageBody(id, content, frameCount)(frame))
 
     if (entries.size >= 9) {
       await addToQueue([...entries])

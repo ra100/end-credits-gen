@@ -2,10 +2,11 @@ import {TextEncoder} from 'node:util'
 
 import {InvocationType, Lambda} from '@aws-sdk/client-lambda'
 import type {APIGatewayProxyEvent, APIGatewayProxyResult} from 'aws-lambda'
-import {nanoid} from 'nanoid'
 
 export const postCredits = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   try {
+    const {nanoid} = await import('nanoid')
+
     const {body, path} = event
 
     if (!body) {

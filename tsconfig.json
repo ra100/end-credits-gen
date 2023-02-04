@@ -3,7 +3,7 @@
   "include": ["svg/**/*", "cdk/**/*", "cli/**/*", "png/**/*"],
   "exclude": ["**/cdk.out", "**/dist"],
   "compilerOptions": {
-    "module": "CommonJS",
+    "module": "NodeNext",
     "lib": ["ESNext"],
     "target": "ESNext",
     "importHelpers": false,
@@ -22,7 +22,7 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     // use Node's module resolution algorithm, instead of the legacy TS one
-    "moduleResolution": "Node",
+    "moduleResolution": "node16",
     // interop between ESM and CJS modules. Recommended by TS
     "esModuleInterop": true,
     // significant perf increase by skipping checking .d.ts files, particularly those in node_modules. Recommended by TS
