@@ -1,7 +1,7 @@
 # Define global args
 ARG FUNCTION_DIR="/home/app"
 ARG RUNTIME_VERSION="18"
-ARG DISTRO_VERSION="bullseye-slim"
+ARG DISTRO_VERSION="alpine3.16"
 ARG NPM_CONFIG_PREFIX="/home/node/.npm-global"
 
 # Stage 1 - bundle base image + runtime
