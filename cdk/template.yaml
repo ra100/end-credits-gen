@@ -325,7 +325,7 @@ Resources:
               - Ref: AWS::URLSuffix
               - /
               - Fn::Sub: cdk-hnb659fds-container-assets-${AWS::AccountId}-${AWS::Region}
-              - :5002d66ce7a230fc3a849e70fe1998c5e59158403c40d3522da8102d41047718
+              - :c2cbe55c7959e79a841db9d5511668cd9317908394984aeb43bf059989099300
       Role:
         Fn::GetAtt:
           - CreditsCreditsPngRenderHandlerServiceRoleDF2DD6B9
@@ -883,7 +883,7 @@ Resources:
   CDKMetadata:
     Type: AWS::CDK::Metadata
     Properties:
-      Analytics: v2:deflate64:H4sIAAAAAAAA/21R227CMAz9Ft6DN0Cb9splkyaNjZUPQCH1ukCbZHUCqqr++3IplAeefHxiHx87U3h+gscRP9NY5MdxKffQbi0XR+apXUszaBdOHNGy5Y/qUQobXUrRDHSfp2TBCTtGfwTtt0OHoSyCjpW82ud8p3SOB4LPGN6cElZqxSSvoM10GRtiHMYk5FVnO06ElmAeQi8IrS+56qy0d1G/V7zAK/d6QmW32tUC19wYqYqgep/dYF1JIt/mDeuC4EMXGVpfGpRQ1BcLN4OSG/8GGRpN0uq6CXdg3MiCWzzzxu+GZOdGxvUGOBdCO2XZCk2pm8qPCexN5r+kiDdJwLdGx1H+kvSaCa/R/uo8UAl13VAXjQahftlbgS9njYvTl1rl0sYLhL+CAz2cJi8wmcJkdCApx7V3LCuELMV/Yvep6koCAAA=
+      Analytics: v2:deflate64:H4sIAAAAAAAA/21R227CMAz9Ft6DN8Y27ZXLJk0aGysfgELqdYE2yeoEVFX99+VSKA88+fjEPj52HuD5Ce5H/ERjkR/GpdxBu7FcHJinti1NoZ07cUDLFj+qRymsdSlFM9B9npI5J+wY/RG03w4dhrIIOlbyapfzrdI57gk+Y3hzSlipFZO8gjbTZWyIcRiTkFedbjkRWoJZCL0gtL7korPU3kX9XvECL9zrEZXdaFcLXHFjpCqC6m12jXUliXybN6wLgg9dZGh9aVBCUZ8tXA1KbvwbZGg0SavrJtyBcSMLbvHEG78bkp0ZGdcb4EwI7ZRlSzSlbio/JrBXmf+SIt4kAd8aHUf5c9JrJrxC+6vzQCXUdUNdNBqE+mWvBb6cNS5OX2iVSxsvEP4K9nR3nLzA5BEmoz1JOa69Y1khZCn+AzKllFpKAgAA
     Metadata:
       aws:cdk:path: EcgStack/CDKMetadata/Default
     Condition: CDKMetadataAvailable

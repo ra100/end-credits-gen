@@ -9,7 +9,7 @@
     "data": [
       {
         "name": "url",
-        "value": "https://xxxx.execute-api.eu-west-1.amazonaws.com/prod"
+        "value": "https://{{id}}.execute-api.eu-west-1.amazonaws.com/prod"
       }
     ]
   },
