@@ -55,7 +55,8 @@ RUN apk update --no-cache
 RUN apk add \
     --no-cache \
     ttf-freefont \
-    ttf-ubuntu-font-family \
+    ttf-liberation \
+    ttf-dejavu \
     inkscape
 
 RUN mkdir -p /usr/share/fonts/custom
