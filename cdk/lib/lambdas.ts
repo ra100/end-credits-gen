@@ -15,7 +15,7 @@ export const getQueueRenderLambda = (scope: Construct, queue: Queue, bucket: Buc
   new NodejsFunction(scope, 'CreditsQueueHandler', {
     entry: path.resolve(__dirname, '../../', 'svg/src/queueHandler.ts'),
     handler: 'createQueue',
-    runtime: Runtime.NODEJS_16_X,
+    runtime: Runtime.NODEJS_18_X,
     environment: {
       QUEUE_NAME: queue.queueName,
       QUEUE_URL: queue.queueUrl,
@@ -30,7 +30,7 @@ export const getJsonToSvgLambda = (scope: Construct, lambda: NodejsFunction): No
   new NodejsFunction(scope, 'CreditsHandler', {
     entry: path.resolve(__dirname, '../../', 'svg/src/creditsHandler.ts'),
     handler: 'postCredits',
-    runtime: Runtime.NODEJS_16_X,
+    runtime: Runtime.NODEJS_18_X,
     bundling: {
       externalModules: ['aws-sdk'],
       sourceMap: true, // include source map, defaults to false
@@ -72,7 +72,7 @@ export const getStatusLambda = (scope: Construct, bucket: Bucket, lambda: Nodejs
   new NodejsFunction(scope, 'CreditsStatusHandler', {
     entry: path.resolve(__dirname, '../../', 'result/src/handler.ts'),
     handler: 'getStatus',
-    runtime: Runtime.NODEJS_16_X,
+    runtime: Runtime.NODEJS_18_X,
     environment: {
       BUCKET: bucket.bucketName,
       COMPRESS_LAMBDA_ARN: lambda.functionArn,
@@ -86,7 +86,7 @@ export const getCompressLambda = (scope: Construct, bucket: Bucket): NodejsFunct
   new NodejsFunction(scope, 'CompressHandler', {
     entry: path.resolve(__dirname, '../../', 'result/src/compressHandler.ts'),
     handler: 'compressHandler',
-    runtime: Runtime.NODEJS_16_X,
+    runtime: Runtime.NODEJS_18_X,
     environment: {
       BUCKET: bucket.bucketName,
     },

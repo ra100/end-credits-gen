@@ -6,6 +6,14 @@ Resources:
         ServerSideEncryptionConfiguration:
           - ServerSideEncryptionByDefault:
               SSEAlgorithm: AES256
+      LifecycleConfiguration:
+        Rules:
+          - ExpirationInDays: 1
+            NoncurrentVersionExpiration:
+              NoncurrentDays: 1
+            Status: Enabled
+      VersioningConfiguration:
+        Status: Enabled
     UpdateReplacePolicy: Retain
     DeletionPolicy: Retain
     Metadata:
@@ -22,17 +30,139 @@ Resources:
               Bool:
                 aws:SecureTransport: 'false'
             Effect: Deny
-            Principal: '*'
+            Principal:
+              AWS: '*'
             Resource:
-              Fn::Join:
-                - ''
-                - - Fn::GetAtt:
-                      - CreditsCreditsStoreDC9BDB5C
-                      - Arn
-                  - /*
+              - Fn::GetAtt:
+                  - CreditsCreditsStoreDC9BDB5C
+                  - Arn
+              - Fn::Join:
+                  - ''
+                  - - Fn::GetAtt:
+                        - CreditsCreditsStoreDC9BDB5C
+                        - Arn
+                    - /*
         Version: '2012-10-17'
     Metadata:
       aws:cdk:path: EcgStack/Credits/CreditsStore/Policy/Resource
+  CreditsCreditsSvgToPngQueue430F2A4D:
+    Type: AWS::SQS::Queue
+    Properties:
+      ReceiveMessageWaitTimeSeconds: 20
+      VisibilityTimeout: 360
+    UpdateReplacePolicy: Delete
+    DeletionPolicy: Delete
+    Metadata:
+      aws:cdk:path: EcgStack/Credits/CreditsSvgToPngQueue/Resource
+  CreditsCreditsQueueHandlerServiceRole29FB1766:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+        Version: '2012-10-17'
+      ManagedPolicyArns:
+        - Fn::Join:
+            - ''
+            - - 'arn:'
+              - Ref: AWS::Partition
+              - :iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+    Metadata:
+      aws:cdk:path: EcgStack/Credits/CreditsQueueHandler/ServiceRole/Resource
+  CreditsCreditsQueueHandlerServiceRoleDefaultPolicy48617A9E:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Action:
+              - s3:GetObject*
+              - s3:GetBucket*
+              - s3:List*
+              - s3:DeleteObject*
+              - s3:PutObject
+              - s3:PutObjectLegalHold
+              - s3:PutObjectRetention
+              - s3:PutObjectTagging
+              - s3:PutObjectVersionTagging
+              - s3:Abort*
+            Effect: Allow
+            Resource:
+              - Fn::GetAtt:
+                  - CreditsCreditsStoreDC9BDB5C
+                  - Arn
+              - Fn::Join:
+                  - ''
+                  - - Fn::GetAtt:
+                        - CreditsCreditsStoreDC9BDB5C
+                        - Arn
+                    - /*
+          - Action:
+              - sqs:SendMessage
+              - sqs:GetQueueAttributes
+              - sqs:GetQueueUrl
+            Effect: Allow
+            Resource:
+              Fn::GetAtt:
+                - CreditsCreditsSvgToPngQueue430F2A4D
+                - Arn
+        Version: '2012-10-17'
+      PolicyName: CreditsCreditsQueueHandlerServiceRoleDefaultPolicy48617A9E
+      Roles:
+        - Ref: CreditsCreditsQueueHandlerServiceRole29FB1766
+    Metadata:
+      aws:cdk:path: EcgStack/Credits/CreditsQueueHandler/ServiceRole/DefaultPolicy/Resource
+  CreditsCreditsQueueHandler7299656C:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket:
+          Fn::Sub: cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}
+        S3Key: db202891788e19adc02872ad025f2193449fa90fab862021d2165e2f1c1e03b2.zip
+      Role:
+        Fn::GetAtt:
+          - CreditsCreditsQueueHandlerServiceRole29FB1766
+          - Arn
+      Environment:
+        Variables:
+          QUEUE_NAME:
+            Fn::GetAtt:
+              - CreditsCreditsSvgToPngQueue430F2A4D
+              - QueueName
+          QUEUE_URL:
+            Ref: CreditsCreditsSvgToPngQueue430F2A4D
+          BUCKET:
+            Ref: CreditsCreditsStoreDC9BDB5C
+          AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1'
+      Handler: index.createQueue
+      MemorySize: 128
+      Runtime: nodejs18.x
+      Timeout: 300
+    DependsOn:
+      - CreditsCreditsQueueHandlerServiceRoleDefaultPolicy48617A9E
+      - CreditsCreditsQueueHandlerServiceRole29FB1766
+    Metadata:
+      aws:cdk:path: EcgStack/Credits/CreditsQueueHandler/Resource
+      aws:asset:path: asset.db202891788e19adc02872ad025f2193449fa90fab862021d2165e2f1c1e03b2
+      aws:asset:is-bundled: true
+      aws:asset:property: Code
+  CreditsCreditsQueueHandlerLogRetentionC87B1F3F:
+    Type: Custom::LogRetention
+    Properties:
+      ServiceToken:
+        Fn::GetAtt:
+          - LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A
+          - Arn
+      LogGroupName:
+        Fn::Join:
+          - ''
+          - - /aws/lambda/
+            - Ref: CreditsCreditsQueueHandler7299656C
+      RetentionInDays: 14
+    Metadata:
+      aws:cdk:path: EcgStack/Credits/CreditsQueueHandler/LogRetention/Resource
   CreditsCreditsHandlerServiceRole96F860B7:
     Type: AWS::IAM::Role
     Properties:
@@ -56,12 +186,223 @@ Resources:
     Properties:
       PolicyDocument:
         Statement:
+          - Action: lambda:InvokeFunction
+            Effect: Allow
+            Resource:
+              - Fn::GetAtt:
+                  - CreditsCreditsQueueHandler7299656C
+                  - Arn
+              - Fn::Join:
+                  - ''
+                  - - Fn::GetAtt:
+                        - CreditsCreditsQueueHandler7299656C
+                        - Arn
+                    - :*
+        Version: '2012-10-17'
+      PolicyName: CreditsCreditsHandlerServiceRoleDefaultPolicyF2B38D20
+      Roles:
+        - Ref: CreditsCreditsHandlerServiceRole96F860B7
+    Metadata:
+      aws:cdk:path: EcgStack/Credits/CreditsHandler/ServiceRole/DefaultPolicy/Resource
+  CreditsCreditsHandler3E4C260D:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket:
+          Fn::Sub: cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}
+        S3Key: 23e8bc0eb4f94c89032c1a08de4db100b086389db03c3576503464728ef2e265.zip
+      Role:
+        Fn::GetAtt:
+          - CreditsCreditsHandlerServiceRole96F860B7
+          - Arn
+      Environment:
+        Variables:
+          QUEUE_LAMBDA_ARN:
+            Fn::GetAtt:
+              - CreditsCreditsQueueHandler7299656C
+              - Arn
+          AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1'
+      Handler: index.postCredits
+      MemorySize: 128
+      Runtime: nodejs18.x
+      Timeout: 20
+    DependsOn:
+      - CreditsCreditsHandlerServiceRoleDefaultPolicyF2B38D20
+      - CreditsCreditsHandlerServiceRole96F860B7
+    Metadata:
+      aws:cdk:path: EcgStack/Credits/CreditsHandler/Resource
+      aws:asset:path: asset.23e8bc0eb4f94c89032c1a08de4db100b086389db03c3576503464728ef2e265
+      aws:asset:is-bundled: true
+      aws:asset:property: Code
+  CreditsCreditsHandlerLogRetentionB172AD91:
+    Type: Custom::LogRetention
+    Properties:
+      ServiceToken:
+        Fn::GetAtt:
+          - LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A
+          - Arn
+      LogGroupName:
+        Fn::Join:
+          - ''
+          - - /aws/lambda/
+            - Ref: CreditsCreditsHandler3E4C260D
+      RetentionInDays: 14
+    Metadata:
+      aws:cdk:path: EcgStack/Credits/CreditsHandler/LogRetention/Resource
+  CreditsCreditsPngRenderHandlerServiceRoleDF2DD6B9:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+        Version: '2012-10-17'
+      ManagedPolicyArns:
+        - Fn::Join:
+            - ''
+            - - 'arn:'
+              - Ref: AWS::Partition
+              - :iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+    Metadata:
+      aws:cdk:path: EcgStack/Credits/CreditsPngRenderHandler/ServiceRole/Resource
+  CreditsCreditsPngRenderHandlerServiceRoleDefaultPolicy678394A4:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
           - Action:
               - s3:GetObject*
               - s3:GetBucket*
               - s3:List*
               - s3:DeleteObject*
               - s3:PutObject
+              - s3:PutObjectLegalHold
+              - s3:PutObjectRetention
+              - s3:PutObjectTagging
+              - s3:PutObjectVersionTagging
+              - s3:Abort*
+            Effect: Allow
+            Resource:
+              - Fn::GetAtt:
+                  - CreditsCreditsStoreDC9BDB5C
+                  - Arn
+              - Fn::Join:
+                  - ''
+                  - - Fn::GetAtt:
+                        - CreditsCreditsStoreDC9BDB5C
+                        - Arn
+                    - /*
+          - Action:
+              - sqs:ReceiveMessage
+              - sqs:ChangeMessageVisibility
+              - sqs:GetQueueUrl
+              - sqs:DeleteMessage
+              - sqs:GetQueueAttributes
+            Effect: Allow
+            Resource:
+              Fn::GetAtt:
+                - CreditsCreditsSvgToPngQueue430F2A4D
+                - Arn
+        Version: '2012-10-17'
+      PolicyName: CreditsCreditsPngRenderHandlerServiceRoleDefaultPolicy678394A4
+      Roles:
+        - Ref: CreditsCreditsPngRenderHandlerServiceRoleDF2DD6B9
+    Metadata:
+      aws:cdk:path: EcgStack/Credits/CreditsPngRenderHandler/ServiceRole/DefaultPolicy/Resource
+  CreditsCreditsPngRenderHandlerD36CE69C:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        ImageUri:
+          Fn::Join:
+            - ''
+            - - Ref: AWS::AccountId
+              - .dkr.ecr.
+              - Ref: AWS::Region
+              - '.'
+              - Ref: AWS::URLSuffix
+              - /
+              - Fn::Sub: cdk-hnb659fds-container-assets-${AWS::AccountId}-${AWS::Region}
+              - :5002d66ce7a230fc3a849e70fe1998c5e59158403c40d3522da8102d41047718
+      Role:
+        Fn::GetAtt:
+          - CreditsCreditsPngRenderHandlerServiceRoleDF2DD6B9
+          - Arn
+      Environment:
+        Variables:
+          BUCKET:
+            Ref: CreditsCreditsStoreDC9BDB5C
+      FunctionName: renderCredits
+      MemorySize: 256
+      PackageType: Image
+      Timeout: 300
+    DependsOn:
+      - CreditsCreditsPngRenderHandlerServiceRoleDefaultPolicy678394A4
+      - CreditsCreditsPngRenderHandlerServiceRoleDF2DD6B9
+    Metadata:
+      aws:cdk:path: EcgStack/Credits/CreditsPngRenderHandler/Resource
+  CreditsCreditsPngRenderHandlerLogRetention6463799E:
+    Type: Custom::LogRetention
+    Properties:
+      ServiceToken:
+        Fn::GetAtt:
+          - LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A
+          - Arn
+      LogGroupName:
+        Fn::Join:
+          - ''
+          - - /aws/lambda/
+            - Ref: CreditsCreditsPngRenderHandlerD36CE69C
+      RetentionInDays: 14
+    Metadata:
+      aws:cdk:path: EcgStack/Credits/CreditsPngRenderHandler/LogRetention/Resource
+  CreditsCreditsPngRenderHandlerSqsEventSourceEcgStackCreditsCreditsSvgToPngQueueDDA4613946F19080:
+    Type: AWS::Lambda::EventSourceMapping
+    Properties:
+      FunctionName:
+        Ref: CreditsCreditsPngRenderHandlerD36CE69C
+      BatchSize: 5
+      EventSourceArn:
+        Fn::GetAtt:
+          - CreditsCreditsSvgToPngQueue430F2A4D
+          - Arn
+    Metadata:
+      aws:cdk:path: EcgStack/Credits/CreditsPngRenderHandler/SqsEventSource:EcgStackCreditsCreditsSvgToPngQueueDDA46139/Resource
+  CreditsCompressHandlerServiceRole5E460572:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+        Version: '2012-10-17'
+      ManagedPolicyArns:
+        - Fn::Join:
+            - ''
+            - - 'arn:'
+              - Ref: AWS::Partition
+              - :iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+    Metadata:
+      aws:cdk:path: EcgStack/Credits/CompressHandler/ServiceRole/Resource
+  CreditsCompressHandlerServiceRoleDefaultPolicyB46397CD:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Action:
+              - s3:GetObject*
+              - s3:GetBucket*
+              - s3:List*
+              - s3:DeleteObject*
+              - s3:PutObject
+              - s3:PutObjectLegalHold
+              - s3:PutObjectRetention
+              - s3:PutObjectTagging
+              - s3:PutObjectVersionTagging
               - s3:Abort*
             Effect: Allow
             Resource:
@@ -75,52 +416,168 @@ Resources:
                         - Arn
                     - /*
         Version: '2012-10-17'
-      PolicyName: CreditsCreditsHandlerServiceRoleDefaultPolicyF2B38D20
+      PolicyName: CreditsCompressHandlerServiceRoleDefaultPolicyB46397CD
       Roles:
-        - Ref: CreditsCreditsHandlerServiceRole96F860B7
+        - Ref: CreditsCompressHandlerServiceRole5E460572
     Metadata:
-      aws:cdk:path: EcgStack/Credits/CreditsHandler/ServiceRole/DefaultPolicy/Resource
-  CreditsCreditsHandler3E4C260D:
+      aws:cdk:path: EcgStack/Credits/CompressHandler/ServiceRole/DefaultPolicy/Resource
+  CreditsCompressHandler46F5E496:
     Type: AWS::Lambda::Function
     Properties:
       Code:
         S3Bucket:
-          Ref: AssetParameters85999cde342a3a55cb865b24fc98c0f87f12ed970badb944f4af9e6a009ccb3eS3Bucket2E82DD27
-        S3Key:
-          Fn::Join:
-            - ''
-            - - Fn::Select:
-                  - 0
-                  - Fn::Split:
-                      - '||'
-                      - Ref: AssetParameters85999cde342a3a55cb865b24fc98c0f87f12ed970badb944f4af9e6a009ccb3eS3VersionKey614CE18A
-              - Fn::Select:
-                  - 1
-                  - Fn::Split:
-                      - '||'
-                      - Ref: AssetParameters85999cde342a3a55cb865b24fc98c0f87f12ed970badb944f4af9e6a009ccb3eS3VersionKey614CE18A
+          Fn::Sub: cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}
+        S3Key: eaa130efb30932175591db45301373c44c0d59da2b92a9368d5ac07f50ebe348.zip
       Role:
         Fn::GetAtt:
-          - CreditsCreditsHandlerServiceRole96F860B7
+          - CreditsCompressHandlerServiceRole5E460572
           - Arn
       Environment:
         Variables:
           BUCKET:
             Ref: CreditsCreditsStoreDC9BDB5C
           AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1'
-      Handler: index.postCredits
-      Runtime: nodejs14.x
+      Handler: index.compressHandler
+      MemorySize: 256
+      Runtime: nodejs18.x
+      Timeout: 900
     DependsOn:
-      - CreditsCreditsHandlerServiceRoleDefaultPolicyF2B38D20
-      - CreditsCreditsHandlerServiceRole96F860B7
+      - CreditsCompressHandlerServiceRoleDefaultPolicyB46397CD
+      - CreditsCompressHandlerServiceRole5E460572
     Metadata:
-      aws:cdk:path: EcgStack/Credits/CreditsHandler/Resource
-      aws:asset:path: asset.85999cde342a3a55cb865b24fc98c0f87f12ed970badb944f4af9e6a009ccb3e
+      aws:cdk:path: EcgStack/Credits/CompressHandler/Resource
+      aws:asset:path: asset.eaa130efb30932175591db45301373c44c0d59da2b92a9368d5ac07f50ebe348
+      aws:asset:is-bundled: true
       aws:asset:property: Code
+  CreditsCompressHandlerLogRetentionF5C5C081:
+    Type: Custom::LogRetention
+    Properties:
+      ServiceToken:
+        Fn::GetAtt:
+          - LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A
+          - Arn
+      LogGroupName:
+        Fn::Join:
+          - ''
+          - - /aws/lambda/
+            - Ref: CreditsCompressHandler46F5E496
+      RetentionInDays: 14
+    Metadata:
+      aws:cdk:path: EcgStack/Credits/CompressHandler/LogRetention/Resource
+  CreditsCreditsStatusHandlerServiceRoleFBD6929C:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+        Version: '2012-10-17'
+      ManagedPolicyArns:
+        - Fn::Join:
+            - ''
+            - - 'arn:'
+              - Ref: AWS::Partition
+              - :iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+    Metadata:
+      aws:cdk:path: EcgStack/Credits/CreditsStatusHandler/ServiceRole/Resource
+  CreditsCreditsStatusHandlerServiceRoleDefaultPolicyAF328DF1:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Action:
+              - s3:GetObject*
+              - s3:GetBucket*
+              - s3:List*
+              - s3:DeleteObject*
+              - s3:PutObject
+              - s3:PutObjectLegalHold
+              - s3:PutObjectRetention
+              - s3:PutObjectTagging
+              - s3:PutObjectVersionTagging
+              - s3:Abort*
+            Effect: Allow
+            Resource:
+              - Fn::GetAtt:
+                  - CreditsCreditsStoreDC9BDB5C
+                  - Arn
+              - Fn::Join:
+                  - ''
+                  - - Fn::GetAtt:
+                        - CreditsCreditsStoreDC9BDB5C
+                        - Arn
+                    - /*
+          - Action: lambda:InvokeFunction
+            Effect: Allow
+            Resource:
+              - Fn::GetAtt:
+                  - CreditsCompressHandler46F5E496
+                  - Arn
+              - Fn::Join:
+                  - ''
+                  - - Fn::GetAtt:
+                        - CreditsCompressHandler46F5E496
+                        - Arn
+                    - :*
+        Version: '2012-10-17'
+      PolicyName: CreditsCreditsStatusHandlerServiceRoleDefaultPolicyAF328DF1
+      Roles:
+        - Ref: CreditsCreditsStatusHandlerServiceRoleFBD6929C
+    Metadata:
+      aws:cdk:path: EcgStack/Credits/CreditsStatusHandler/ServiceRole/DefaultPolicy/Resource
+  CreditsCreditsStatusHandlerC8B87EBE:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket:
+          Fn::Sub: cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}
+        S3Key: 9e2ee3485dbceb1999a59cce8fd2b07668488a433cbdd8f4a82d1dc09b6e294a.zip
+      Role:
+        Fn::GetAtt:
+          - CreditsCreditsStatusHandlerServiceRoleFBD6929C
+          - Arn
+      Environment:
+        Variables:
+          BUCKET:
+            Ref: CreditsCreditsStoreDC9BDB5C
+          COMPRESS_LAMBDA_ARN:
+            Fn::GetAtt:
+              - CreditsCompressHandler46F5E496
+              - Arn
+          AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1'
+      Handler: index.getStatus
+      MemorySize: 128
+      Runtime: nodejs18.x
+      Timeout: 300
+    DependsOn:
+      - CreditsCreditsStatusHandlerServiceRoleDefaultPolicyAF328DF1
+      - CreditsCreditsStatusHandlerServiceRoleFBD6929C
+    Metadata:
+      aws:cdk:path: EcgStack/Credits/CreditsStatusHandler/Resource
+      aws:asset:path: asset.9e2ee3485dbceb1999a59cce8fd2b07668488a433cbdd8f4a82d1dc09b6e294a
+      aws:asset:is-bundled: true
+      aws:asset:property: Code
+  CreditsCreditsStatusHandlerLogRetention9EBACDB8:
+    Type: Custom::LogRetention
+    Properties:
+      ServiceToken:
+        Fn::GetAtt:
+          - LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A
+          - Arn
+      LogGroupName:
+        Fn::Join:
+          - ''
+          - - /aws/lambda/
+            - Ref: CreditsCreditsStatusHandlerC8B87EBE
+      RetentionInDays: 14
+    Metadata:
+      aws:cdk:path: EcgStack/Credits/CreditsStatusHandler/LogRetention/Resource
   Creditscreditsapi548AF886:
     Type: AWS::ApiGateway::RestApi
     Properties:
-      Description: This service serves widgets.
+      Description: This service renders end credits crawl.
       Name: Credits Service
     Metadata:
       aws:cdk:path: EcgStack/Credits/credits-api/Resource
@@ -140,6 +597,8 @@ Resources:
             - - 'arn:'
               - Ref: AWS::Partition
               - :iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs
+    UpdateReplacePolicy: Retain
+    DeletionPolicy: Retain
     Metadata:
       aws:cdk:path: EcgStack/Credits/credits-api/CloudWatchRole/Resource
   CreditscreditsapiAccountF9FC1F5A:
@@ -151,15 +610,20 @@ Resources:
           - Arn
     DependsOn:
       - Creditscreditsapi548AF886
+    UpdateReplacePolicy: Retain
+    DeletionPolicy: Retain
     Metadata:
       aws:cdk:path: EcgStack/Credits/credits-api/Account
-  CreditscreditsapiDeploymentA812BC1357f276643a7d665b276eaeab5489ea89:
+  CreditscreditsapiDeploymentA812BC13b1fab242f3877771ff3523252493a016:
     Type: AWS::ApiGateway::Deployment
     Properties:
       RestApiId:
         Ref: Creditscreditsapi548AF886
-      Description: Automatically created by the RestApi construct
+      Description: This service renders end credits crawl.
     DependsOn:
+      - CreditscreditsapicreditsjobIdGET7406C210
+      - CreditscreditsapicreditsjobIdD62FEBBB
+      - CreditscreditsapicreditsGET9D3667B2
       - CreditscreditsapicreditsPOSTB1F6BEFA
       - Creditscreditsapicredits3B160783
     Metadata:
@@ -170,8 +634,10 @@ Resources:
       RestApiId:
         Ref: Creditscreditsapi548AF886
       DeploymentId:
-        Ref: CreditscreditsapiDeploymentA812BC1357f276643a7d665b276eaeab5489ea89
+        Ref: CreditscreditsapiDeploymentA812BC13b1fab242f3877771ff3523252493a016
       StageName: prod
+    DependsOn:
+      - CreditscreditsapiAccountF9FC1F5A
     Metadata:
       aws:cdk:path: EcgStack/Credits/credits-api/DeploymentStage.prod/Resource
   Creditscreditsapicredits3B160783:
@@ -186,6 +652,90 @@ Resources:
         Ref: Creditscreditsapi548AF886
     Metadata:
       aws:cdk:path: EcgStack/Credits/credits-api/Default/credits/Resource
+  CreditscreditsapicreditsjobIdD62FEBBB:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      ParentId:
+        Ref: Creditscreditsapicredits3B160783
+      PathPart: '{jobId}'
+      RestApiId:
+        Ref: Creditscreditsapi548AF886
+    Metadata:
+      aws:cdk:path: EcgStack/Credits/credits-api/Default/credits/{jobId}/Resource
+  CreditscreditsapicreditsjobIdGETApiPermissionEcgStackCreditscreditsapi1871A346GETcreditsjobIdB1D4952A:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::GetAtt:
+          - CreditsCreditsStatusHandlerC8B87EBE
+          - Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Join:
+          - ''
+          - - 'arn:'
+            - Ref: AWS::Partition
+            - ':execute-api:'
+            - Ref: AWS::Region
+            - ':'
+            - Ref: AWS::AccountId
+            - ':'
+            - Ref: Creditscreditsapi548AF886
+            - /
+            - Ref: CreditscreditsapiDeploymentStageprodB9C9EA14
+            - /GET/credits/*
+    Metadata:
+      aws:cdk:path: EcgStack/Credits/credits-api/Default/credits/{jobId}/GET/ApiPermission.EcgStackCreditscreditsapi1871A346.GET..credits.{jobId}
+  CreditscreditsapicreditsjobIdGETApiPermissionTestEcgStackCreditscreditsapi1871A346GETcreditsjobIdC0A15979:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::GetAtt:
+          - CreditsCreditsStatusHandlerC8B87EBE
+          - Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Join:
+          - ''
+          - - 'arn:'
+            - Ref: AWS::Partition
+            - ':execute-api:'
+            - Ref: AWS::Region
+            - ':'
+            - Ref: AWS::AccountId
+            - ':'
+            - Ref: Creditscreditsapi548AF886
+            - /test-invoke-stage/GET/credits/*
+    Metadata:
+      aws:cdk:path: EcgStack/Credits/credits-api/Default/credits/{jobId}/GET/ApiPermission.Test.EcgStackCreditscreditsapi1871A346.GET..credits.{jobId}
+  CreditscreditsapicreditsjobIdGET7406C210:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      HttpMethod: GET
+      ResourceId:
+        Ref: CreditscreditsapicreditsjobIdD62FEBBB
+      RestApiId:
+        Ref: Creditscreditsapi548AF886
+      AuthorizationType: NONE
+      Integration:
+        IntegrationHttpMethod: POST
+        Type: AWS_PROXY
+        Uri:
+          Fn::Join:
+            - ''
+            - - 'arn:'
+              - Ref: AWS::Partition
+              - ':apigateway:'
+              - Ref: AWS::Region
+              - :lambda:path/2015-03-31/functions/
+              - Fn::GetAtt:
+                  - CreditsCreditsStatusHandlerC8B87EBE
+                  - Arn
+              - /invocations
+    Metadata:
+      aws:cdk:path: EcgStack/Credits/credits-api/Default/credits/{jobId}/GET/Resource
   CreditscreditsapicreditsPOSTApiPermissionEcgStackCreditscreditsapi1871A346POSTcredits08582E23:
     Type: AWS::Lambda::Permission
     Properties:
@@ -262,10 +812,78 @@ Resources:
               - /invocations
     Metadata:
       aws:cdk:path: EcgStack/Credits/credits-api/Default/credits/POST/Resource
+  CreditscreditsapicreditsGET9D3667B2:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      HttpMethod: GET
+      ResourceId:
+        Ref: Creditscreditsapicredits3B160783
+      RestApiId:
+        Ref: Creditscreditsapi548AF886
+      AuthorizationType: NONE
+      Integration:
+        Type: MOCK
+    Metadata:
+      aws:cdk:path: EcgStack/Credits/credits-api/Default/credits/GET/Resource
+  LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+        Version: '2012-10-17'
+      ManagedPolicyArns:
+        - Fn::Join:
+            - ''
+            - - 'arn:'
+              - Ref: AWS::Partition
+              - :iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+    Metadata:
+      aws:cdk:path: EcgStack/LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8a/ServiceRole/Resource
+  LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRoleDefaultPolicyADDA7DEB:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Action:
+              - logs:PutRetentionPolicy
+              - logs:DeleteRetentionPolicy
+            Effect: Allow
+            Resource: '*'
+        Version: '2012-10-17'
+      PolicyName: LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRoleDefaultPolicyADDA7DEB
+      Roles:
+        - Ref: LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB
+    Metadata:
+      aws:cdk:path: EcgStack/LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8a/ServiceRole/DefaultPolicy/Resource
+  LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A:
+    Type: AWS::Lambda::Function
+    Properties:
+      Handler: index.handler
+      Runtime: nodejs14.x
+      Code:
+        S3Bucket:
+          Fn::Sub: cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}
+        S3Key: e45ee2082d227db1b6f0292696ce5ce2b061c105d15efb341925ca040d1feb68.zip
+      Role:
+        Fn::GetAtt:
+          - LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB
+          - Arn
+    DependsOn:
+      - LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRoleDefaultPolicyADDA7DEB
+      - LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB
+    Metadata:
+      aws:cdk:path: EcgStack/LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8a/Resource
+      aws:asset:path: asset.e45ee2082d227db1b6f0292696ce5ce2b061c105d15efb341925ca040d1feb68
+      aws:asset:is-bundled: false
+      aws:asset:property: Code
   CDKMetadata:
     Type: AWS::CDK::Metadata
     Properties:
-      Analytics: v2:deflate64:H4sIAAAAAAAAA1WQwVLDIBCGn6V3sjVWD95M63hTO/EJkKyVJECGBTsZJu9ugKStp//fneVb/i3h6QHKzTM/UyGabhuEsQjh03HRsYPR5KwXjlVE6ObmSeoTq5GMtwLZ4Vt/eDd4F92RW67QoY3F7chMaaSTRk8sbgm0g7D3osP0bHFZjqaXYry2cz2xnquvhhfaNNgSvCd59VpEKpNcQahNn5YlvWJWAO0KHiMQpCQLEMI8cuHEcbRKEuW/DvLEHZ75ONORXDXIJdlqKyGM14694NCbUaFOgW6qeLD0q2zWo+w54b8jXvwbuh/TxFZ20zSxGBpa2v6Wj1Dew92mJSkLOy+WCqHO+gez2uKOxwEAAA==
+      Analytics: v2:deflate64:H4sIAAAAAAAA/21R227CMAz9Ft6DN0Cb9splkyaNjZUPQCH1ukCbZHUCqqr++3IplAeefHxiHx87U3h+gscRP9NY5MdxKffQbi0XR+apXUszaBdOHNGy5Y/qUQobXUrRDHSfp2TBCTtGfwTtt0OHoSyCjpW82ud8p3SOB4LPGN6cElZqxSSvoM10GRtiHMYk5FVnO06ElmAeQi8IrS+56qy0d1G/V7zAK/d6QmW32tUC19wYqYqgep/dYF1JIt/mDeuC4EMXGVpfGpRQ1BcLN4OSG/8GGRpN0uq6CXdg3MiCWzzzxu+GZOdGxvUGOBdCO2XZCk2pm8qPCexN5r+kiDdJwLdGx1H+kvSaCa/R/uo8UAl13VAXjQahftlbgS9njYvTl1rl0sYLhL+CAz2cJi8wmcJkdCApx7V3LCuELMV/Yvep6koCAAA=
     Metadata:
       aws:cdk:path: EcgStack/CDKMetadata/Default
     Condition: CDKMetadataAvailable
@@ -283,16 +901,6 @@ Outputs:
           - /
           - Ref: CreditscreditsapiDeploymentStageprodB9C9EA14
           - /
-Parameters:
-  AssetParameters85999cde342a3a55cb865b24fc98c0f87f12ed970badb944f4af9e6a009ccb3eS3Bucket2E82DD27:
-    Type: String
-    Description: S3 bucket for asset "85999cde342a3a55cb865b24fc98c0f87f12ed970badb944f4af9e6a009ccb3e"
-  AssetParameters85999cde342a3a55cb865b24fc98c0f87f12ed970badb944f4af9e6a009ccb3eS3VersionKey614CE18A:
-    Type: String
-    Description: S3 key for asset version "85999cde342a3a55cb865b24fc98c0f87f12ed970badb944f4af9e6a009ccb3e"
-  AssetParameters85999cde342a3a55cb865b24fc98c0f87f12ed970badb944f4af9e6a009ccb3eArtifactHash4D9295FB:
-    Type: String
-    Description: Artifact hash for asset "85999cde342a3a55cb865b24fc98c0f87f12ed970badb944f4af9e6a009ccb3e"
 Conditions:
   CDKMetadataAvailable:
     Fn::Or:
@@ -365,3 +973,21 @@ Conditions:
           - Fn::Equals:
               - Ref: AWS::Region
               - us-west-2
+Parameters:
+  BootstrapVersion:
+    Type: AWS::SSM::Parameter::Value<String>
+    Default: /cdk-bootstrap/hnb659fds/version
+    Description: Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]
+Rules:
+  CheckBootstrapVersion:
+    Assertions:
+      - Assert:
+          Fn::Not:
+            - Fn::Contains:
+                - - '1'
+                  - '2'
+                  - '3'
+                  - '4'
+                  - '5'
+                - Ref: BootstrapVersion
+        AssertDescription: CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI.

@@ -1,0 +1,21 @@
+[
+  {
+    "_id": "06d66a10-b14e-48bf-9cf1-3981d61f385c",
+    "colId": "history",
+    "containerId": "",
+    "name": "{{url}}/credits",
+    "url": "{{url}}/credits",
+    "method": "GET",
+    "sortNum": 0,
+    "created": "2023-02-20T08:14:43.126Z",
+    "modified": "2023-02-20T08:14:43.126Z",
+    "headers": [],
+    "params": [],
+    "body": {
+      "type": "json",
+      "raw": "{\r  \"width\": 4096,\r  \"height\": 2160,\r  \"outputWidth\": 2048,\r  \"outputHeight\": 1080,\r  \"ppf\": 3,\r  \"style\": {\r    \"background\": \"#000\",\r    \"color\": \"#aaa\",\r    \"fontFamily\": \"Futura PT\",\r    \"fontSize\": 70,\r    \"fontWeight\": 300,\r    \"marginBottom\": 18,\r    \"marginTop\": 0\r  },\r  \"sections\": [\r    {\r      \"marginBottom\": 0,\r      \"columns\": [\r        {\r          \"align\": \"center\",\r          \"xOffset\": 2048,\r          \"fontSize\": 256,\r          \"fontWeight\": 400,\r          \"fontFamily\": \"Goldman\",\r          \"marginBottom\": 0,\r          \"xTransform\": 1\r        }\r      ],\r      \"content\": [\r        [\r          [\r            \"MSD.js\"\r          ]\r        ]\r      ]\r    },\r        {\r      \"marginBottom\": 400,\r      \"marginTop\": -150,\r      \"columns\": [\r        {\r          \"align\": \"center\",\r          \"xOffset\": 2048,\r          \"fontSize\": 100,\r          \"fontWeight\": 400,\r          \"fontFamily\": \"Goldman\"\r        }\r      ],\r      \"content\": [\r        [\r          [\r            \"AWS CDK\"\r          ]\r        ]\r      ]\r    },\r    {\r      \"marginBottom\": 128,\r      \"columns\": [\r        {\r          \"align\": \"right\",\r          \"fontWeight\": 300,\r          \"xOffset\": 1968\r        },\r        {\r          \"align\": \"left\",\r          \"fontWeight\": 500,\r          \"xOffset\": 2128\r        }\r      ],\r      \"content\": [\r        [\r          [\r            \"Speaker\"\r          ],\r          [\r            \"Rastislav Svarba\"\r          ]\r        ]\r      ]\r    }\r  ]\r}",
+      "form": []
+    },
+    "tests": []
+  }
+]

@@ -1,0 +1,27 @@
+[
+  {
+    "_id": "4913f619-3474-4190-84c8-2b8b0ede5d29",
+    "name": "default",
+    "default": true,
+    "sortNum": 10000,
+    "created": "2023-02-20T08:11:57.957Z",
+    "modified": "2023-02-20T08:11:57.957Z",
+    "data": [
+      {
+        "name": "url",
+        "value": "https://xxxx.execute-api.eu-west-1.amazonaws.com/prod"
+      }
+    ]
+  },
+  {
+    "_id": "9cf8e510-0487-481b-837f-e16fbfb8520e",
+    "name": "(Local Env)",
+    "default": false,
+    "global": true,
+    "local": true,
+    "sortNum": -1,
+    "created": "2023-02-20T08:12:39.611Z",
+    "modified": "2023-02-20T08:12:39.612Z",
+    "data": []
+  }
+]

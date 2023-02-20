@@ -5,9 +5,11 @@
   "description": "",
   "main": "cdk/bin/index.ts",
   "scripts": {
-    "test": "jest",
+    "bootstrap": "cdk bootstrap",
     "cdk": "cdk",
+    "deploy": "cdk deploy",
     "template": "npm run cdk synth --no-staging > template.yaml",
+    "test": "jest",
     "sam": "sam local start-api"
   },
   "author": "ra100",

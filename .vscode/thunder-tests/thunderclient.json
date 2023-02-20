@@ -1,0 +1,42 @@
+[
+  {
+    "_id": "dbec4e01-6c38-4976-874d-7e8ca48b23b3",
+    "colId": "8c43ef76-1e21-4ad3-994e-a4c34cd504b1",
+    "containerId": "",
+    "name": "{{url}}/credits",
+    "url": "{{url}}/credits",
+    "method": "POST",
+    "sortNum": 10000,
+    "created": "2023-02-20T08:15:12.945Z",
+    "modified": "2023-02-20T08:16:44.852Z",
+    "headers": [],
+    "params": [],
+    "body": {
+      "type": "json",
+      "raw": "{\n  \"width\": 4096,\n  \"height\": 2160,\n  \"outputWidth\": 2048,\n  \"outputHeight\": 1080,\n  \"ppf\": 3,\n  \"style\": {\n    \"background\": \"#000\",\n    \"color\": \"#aaa\",\n    \"fontFamily\": \"Futura PT\",\n    \"fontSize\": 70,\n    \"fontWeight\": 300,\n    \"marginBottom\": 18,\n    \"marginTop\": 0\n  },\n  \"sections\": [\n    {\n      \"marginBottom\": 0,\n      \"columns\": [\n        {\n          \"align\": \"center\",\n          \"xOffset\": 2048,\n          \"fontSize\": 256,\n          \"fontWeight\": 400,\n          \"fontFamily\": \"Goldman\",\n          \"marginBottom\": 0,\n          \"xTransform\": 1\n        }\n      ],\n      \"content\": [\n        [\n          [\n            \"MSD.js\"\n          ]\n        ]\n      ]\n    },\n        {\n      \"marginBottom\": 400,\n      \"marginTop\": -150,\n      \"columns\": [\n        {\n          \"align\": \"center\",\n          \"xOffset\": 2048,\n          \"fontSize\": 100,\n          \"fontWeight\": 400,\n          \"fontFamily\": \"Goldman\"\n        }\n      ],\n      \"content\": [\n        [\n          [\n            \"AWS CDK\"\n          ]\n        ]\n      ]\n    },\n    {\n      \"marginBottom\": 128,\n      \"columns\": [\n        {\n          \"align\": \"right\",\n          \"fontWeight\": 300,\n          \"xOffset\": 1968\n        },\n        {\n          \"align\": \"left\",\n          \"fontWeight\": 500,\n          \"xOffset\": 2128\n        }\n      ],\n      \"content\": [\n        [\n          [\n            \"Speaker\"\n          ],\n          [\n            \"Rastislav Svarba\"\n          ]\n        ]\n      ]\n    }\n  ]\n}",
+      "form": []
+    },
+    "tests": [
+      {
+        "type": "set-env-var",
+        "custom": "json.id",
+        "action": "setto",
+        "value": "{{jobId,local}}"
+      }
+    ]
+  },
+  {
+    "_id": "553a3d02-220f-4ff0-ba32-c3419fdffcb8",
+    "colId": "8c43ef76-1e21-4ad3-994e-a4c34cd504b1",
+    "containerId": "",
+    "name": "{{url}}/credits Copy",
+    "url": "{{url}}/credits/{{jobId}}",
+    "method": "GET",
+    "sortNum": 20000,
+    "created": "2023-02-20T08:15:25.105Z",
+    "modified": "2023-02-20T08:16:01.142Z",
+    "headers": [],
+    "params": [],
+    "tests": []
+  }
+]
