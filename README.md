@@ -92,6 +92,27 @@ From this: [example.yaml](./example.yaml)
 - `cdk diff` compare deployed stack with current state
 - `cdk synth` emits the synthesized CloudFormation template
 
+## Overview Diagram
+
+```mermaid
+flowchart LR
+   A[fa:fa-user Client] -->|request| B{API Gateway}
+   B -->|POST /credits| C(fa:fa-gears JsonToSvg)
+   B -->|GET /credits/:id| D(fa:fa-gears Status)
+   C -->|invoke| E(fa:fa-gears Queue)
+   E -->|populate| SQS{fa:fa-message SQS}
+   E -->|save state| S3{fa:fa-message S3}
+   S3 -->|return zip| A
+   SQS -->|invoke| F(fa:fa-gears Render)
+   F -->|save frame| S3
+   D --> Status{Status?}
+   Status -->|in progress| A
+   Status -->|rendering done| G(fa:fa-gears Compress)
+   Status -->|compressing| A
+   Status -->|link to S3| S3
+   G -->|save zip| S3
+```
+
 ## License
 
 [GNU LGPLv3](./LICENSE)
