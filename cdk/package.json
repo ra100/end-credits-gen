@@ -15,7 +15,7 @@
   "author": "ra100",
   "license": "GNU LGPLv3",
   "devDependencies": {
-    "@aws-cdk/assert": "^2.65.0",
+    "@aws-cdk/assert": "^2.66.1",
     "@types/jest": "^29.4.0",
     "@types/node": "^18.11.18",
     "aws-cdk": "^2.65.0",
