@@ -10,15 +10,14 @@ import {createSvgFile} from './saveSvgFile'
 
 const importFile = (path: string) => fs.readFileSync(path, 'utf8')
 
-const svg = (config: Config, output: string) => {
+const svg = async (config: Config, output: string) => {
   stdout.write('Assembling svg\n')
-  createSvgFile(config, output)
-  return Promise.resolve()
+  await createSvgFile(config, output)
 }
 
 const png = async (config: Config, output: string) => {
   stdout.write('Assembling svg\n')
-  const {filename, height} = createSvgFile(config)
+  const {filename, height} = await createSvgFile(config)
 
   stdout.write('Creating PNG\n')
   try {

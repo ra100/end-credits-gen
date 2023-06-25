@@ -1,6 +1,6 @@
 import assert from 'node:assert'
 import {exec} from 'node:child_process'
-import fs from 'node:fs'
+import fs from 'node:fs/promises'
 import os from 'node:os'
 import path from 'node:path'
 import {stdout} from 'node:process'
@@ -10,12 +10,14 @@ import {Config} from '@ra100-ecg/svg/src/createSvg'
 
 import {createSvgFile} from './saveSvgFile'
 
+const inkscapeExecutable = process.env.INKSCAPE || 'inkscape'
+
 const execPromise = promisify(exec)
 
 const textToPath = async (input: string, output?: string) => {
   const outputFileName = output || path.join(os.tmpdir(), 'ecg', `tmp-path-svg${Date.now()}.svg`)
 
-  await execPromise(`inkscape "${input}" --export-text-to-path --export-filename="${outputFileName}"`)
+  await execPromise(`${inkscapeExecutable} "${input}" --export-text-to-path --export-filename="${outputFileName}"`)
 
   return outputFileName
 }
@@ -27,16 +29,16 @@ const svgToPng = async (input: string, output: string) => {
 
   const outputFileName = output || path.join(os.tmpdir(), 'ecg', `tmp-path-svg${Date.now()}.png`)
 
-  await execPromise(`inkscape "${input}" --export-filename="${outputFileName}"`)
+  await execPromise(`${inkscapeExecutable} "${input}" --export-filename="${outputFileName}"`)
 
   return outputFileName
 }
 
 export const createPng = async (input: string, output: string): Promise<string> => {
-  const pathedSvg = await textToPath(input)
-  const pngPath = await svgToPng(pathedSvg, output)
+  const pathToSvg = await textToPath(input)
+  const pngPath = await svgToPng(pathToSvg, output)
 
-  fs.unlinkSync(pathedSvg)
+  await fs.unlink(pathToSvg)
 
   return pngPath
 }
@@ -49,9 +51,9 @@ const cropFrameToFile = (
   const offset = Math.round(frameNumber * (ppf * speedFactor))
   const filenameNumber = `000000${frameNumber + 1}`.slice(-5)
 
-  const exportArea = [0, offset, width, offset + height].join(':').replace(/\./g, ',')
+  const exportArea = [0, offset, width, offset + height].join(':').replaceAll('.', ',')
 
-  const inscapeArgsuments = [
+  const inscapeArguments = [
     `"${svgImagePath}"`,
     `--export-area=${exportArea}`,
     `--export-width=${outputWidth || width}`,
@@ -60,13 +62,12 @@ const cropFrameToFile = (
   ].join(' ')
 
   stdout.write(`Rendering frame ${filenameNumber}\n`)
-  return execPromise(`inkscape ${inscapeArgsuments}`)
+  return execPromise(`${inkscapeExecutable} ${inscapeArguments}`)
 }
 
 export const renderClip = async (config: Config, outputDirectory: string): Promise<void> => {
-  const {filename, height: creditsHeight} = createSvgFile(config)
+  const {filename, height: creditsHeight} = await createSvgFile(config)
   const svgImagePath = await textToPath(filename)
-
   const sizeFactor = config.outputHeight ? config.outputHeight / config.height : 1
   const frameCount = Math.floor(((creditsHeight - config.height) * sizeFactor) / config.ppf)
   const cpus = os.cpus().length
@@ -90,7 +91,7 @@ export const renderClip = async (config: Config, outputDirectory: string): Promi
       await Promise.all(batch)
     }
   } finally {
-    fs.unlinkSync(filename)
-    fs.unlinkSync(svgImagePath)
+    await fs.unlink(filename)
+    await fs.unlink(svgImagePath)
   }
 }
