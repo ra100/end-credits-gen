@@ -1,6 +1,6 @@
 import {stderr, stdout} from 'node:process'
 import assert from 'node:assert'
-import fs from 'node:fs'
+import fs from 'node:fs/promises'
 import {load} from 'js-yaml'
 
 import {Config} from '@ra100-ecg/svg'
@@ -8,7 +8,7 @@ import {Config} from '@ra100-ecg/svg'
 import {createPng, renderClip} from './svgToPng'
 import {createSvgFile} from './saveSvgFile'
 
-const importFile = (path: string) => fs.readFileSync(path, 'utf8')
+const importFile = (path: string): Promise<string> => fs.readFile(path, 'utf8')
 
 const svg = async (config: Config, output: string) => {
   stdout.write('Assembling svg\n')
@@ -24,7 +24,7 @@ const png = async (config: Config, output: string) => {
     await createPng(filename, output)
     return {height}
   } finally {
-    fs.unlinkSync(filename)
+    await fs.unlink(filename).catch((error) => stderr.write(`Error deleting file ${filename}: ${error}`))
   }
 }
 
@@ -33,14 +33,14 @@ const render = async (config: Config, output: string) => {
   await renderClip(config, output)
 }
 
-const main = () => {
+const main = async () => {
   const [_node, _script, input, output] = process.argv
 
   assert(!!input, 'input file needs to be specified')
   assert(!!output, 'output file or folder needs to be specified')
 
   stdout.write(`Import config ${input}\n`)
-  const yamlFile = importFile(input)
+  const yamlFile = await importFile(input)
   const config = load(yamlFile) as Config
 
   if (output.slice(-4) === '.png') {
