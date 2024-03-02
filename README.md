@@ -30,6 +30,12 @@ To export rendered frames with crawl speed configured by `ppf` setting in yaml
 npm --workspace=cli start ./input.yaml ./export/folder/
 ```
 
+Limit number of CPU threads to be used:
+
+```bash
+npm --workspace=cli start ./input.yaml ./export/folder/ 1
+```
+
 This will produce folder with files `./export/folder/credits_<frame number>.png`
 
 ## Deploy to AWS

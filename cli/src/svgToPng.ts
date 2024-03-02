@@ -79,12 +79,12 @@ const cropFrameToFile = async (
   }
 }
 
-export const renderClip = async (config: Config, outputDirectory: string): Promise<void> => {
+export const renderClip = async (config: Config, outputDirectory: string, cpuLimit?: number): Promise<void> => {
   const {filename, height: creditsHeight} = await createSvgFile(config)
   const svgImagePath = await textToPath(filename)
   const sizeFactor = config.outputHeight ? config.outputHeight / config.height : 1
   const frameCount = Math.floor(((creditsHeight - config.height) * sizeFactor) / config.ppf)
-  const cpus = os.cpus().length
+  const cpus = cpuLimit ?? os.cpus().length
 
   stdout.write(`Rendering ${frameCount} frames`)
   try {

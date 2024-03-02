@@ -28,13 +28,13 @@ const png = async (config: Config, output: string) => {
   }
 }
 
-const render = async (config: Config, output: string) => {
+const render = async (config: Config, output: string, cpuLimit?: number) => {
   stdout.write('Rendering clip\n')
-  await renderClip(config, output)
+  await renderClip(config, output, cpuLimit)
 }
 
 const main = async () => {
-  const [_node, _script, input, output] = process.argv
+  const [_node, _script, input, output, cpuLimit] = process.argv
 
   assert(!!input, 'input file needs to be specified')
   assert(!!output, 'output file or folder needs to be specified')
@@ -51,7 +51,7 @@ const main = async () => {
     return svg(config, output)
   }
 
-  return render(config, output)
+  return render(config, output, cpuLimit ? Number(cpuLimit) : undefined)
 }
 
 main()
