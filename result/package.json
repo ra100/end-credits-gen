@@ -46,23 +46,23 @@
   "author": "ra100",
   "license": "GNU LGPLv3",
   "dependencies": {
-    "@aws-sdk/client-lambda": "^3.525.0",
-    "@aws-sdk/client-s3": "^3.525.0",
-    "@aws-sdk/lib-storage": "^3.525.1",
-    "@aws-sdk/s3-request-presigner": "^3.525.0",
+    "@aws-sdk/client-lambda": "^3.651.1",
+    "@aws-sdk/client-s3": "^3.651.1",
+    "@aws-sdk/lib-storage": "^3.651.1",
+    "@aws-sdk/s3-request-presigner": "^3.651.1",
     "@ra100-ecg/svg": "^1.0.0",
-    "archiver": "^7.0.0",
-    "aws-sdk": "^2.1569.0"
+    "archiver": "^7.0.1",
+    "aws-sdk": "^2.1691.0"
   },
   "devDependencies": {
-    "@aws-sdk/types": "^3.523.0",
+    "@aws-sdk/types": "^3.649.0",
     "@types/archiver": "^6.0.2",
-    "@types/aws-lambda": "^8.10.134",
-    "@types/jest": "^29.5.12",
-    "@types/node": "^20.11.24",
+    "@types/aws-lambda": "^8.10.145",
+    "@types/jest": "^29.5.13",
+    "@types/node": "22.7.5",
     "jest": "^29.7.0",
-    "ts-jest": "^29.1.2",
+    "ts-jest": "^29.2.5",
     "ts-node": "^10.9.2",
-    "typescript": "^5.3.3"
+    "typescript": "^5.6.2"
   }
 }
