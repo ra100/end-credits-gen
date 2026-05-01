@@ -64,7 +64,7 @@ const cropFrameToFile = async (
     `--export-filename="${path.join(outputDir, `credits_${filenameNumber}.png`)}"`,
   ].join(' ')
 
-  const command = `${inkscapeExecutable} ${inscapeArguments}`
+  const command = `env NO_AT_BRIDGE=1 GTK_A11Y=none GTK_USE_PORTAL=0 dbus-run-session -- ${inkscapeExecutable} ${inscapeArguments}`
 
   stdout.write(`Rendering frame ${filenameNumber}\n`)
   stdout.write(`${command}\n`)
